@@ -1,6 +1,6 @@
 # WorkNest Dev Log
 
-## June 6, 2026
+## June 5, 2026
 
 - Completed Phase 0 — Full system design
 - Designed 3 MongoDB documents: User, LeaveRequest, LeaveBalance
@@ -11,7 +11,7 @@
 - Created package structure, pom.xml with all dependencies
 - Set up application.properties and .gitignore
 
-## June 6, 2026 — Update
+## June 5, 2026 — Update
 
 - Fixed nested project structure issue
 - Recreated 8 packages in correct location
