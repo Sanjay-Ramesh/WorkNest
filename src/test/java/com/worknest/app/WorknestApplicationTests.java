@@ -1,4 +1,4 @@
-package com.worknest.worknest;
+package com.worknest.app;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
