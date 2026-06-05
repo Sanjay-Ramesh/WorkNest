@@ -11,6 +11,13 @@
 - Created package structure, pom.xml with all dependencies
 - Set up application.properties and .gitignore
 
+## June 6, 2026 — Update
+
+- Fixed nested project structure issue
+- Recreated 8 packages in correct location
+- Fixed test package to com.worknest.app
+- All files clean on GitHub
+
 ## Tomorrow
 
 - Phase 2 — User model + Auth setup
