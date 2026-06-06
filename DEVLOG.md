@@ -18,6 +18,19 @@
 - Fixed test package to com.worknest.app
 - All files clean on GitHub
 
-## Tomorrow
+## June 6, 2026
+- MongoDB Atlas cluster setup (worknest-cluster, AWS Mumbai)
+- App connected to Atlas successfully
+- Built Role.java — enum with 4 roles
+- Built User.java — MongoDB document with 10 fields
+- Built UserRepository.java — MongoRepository with findByEmail
+- Switched from VS Code to IntelliJ for better Java support
+- Understood: enum vs String, private encapsulation, lazy MongoDB connection, replica sets, Spring Data query derivation
 
-- Phase 2 — User model + Auth setup
+## Tomorrow — Phase 3
+- Auth module begins
+- RegisterRequest DTO
+- LoginRequest DTO
+- UserService
+- AuthController
+- JWT setup
