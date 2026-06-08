@@ -28,12 +28,21 @@
 - Understood: enum vs String, private encapsulation, lazy MongoDB connection, replica sets, Spring Data query derivation
 
 ## June 7, 2026
-- As of now no update
+- Holiday Sunday
 
-## Tomorrow — Phase 3
-- Auth module begins
-- RegisterRequest DTO
-- LoginRequest DTO
-- UserService
-- AuthController
-- JWT setup
+## June 8, 2026
+- Started Phase 3 — Auth Module
+- Built RegisterRequest.java — DTO with validation annotations
+- Built LoginRequest.java — email + password with @NotBlank
+- Built AuthResponse.java — response DTO with token field
+- Built JwtUtil.java — generateToken, extractEmail, isTokenValid
+- Built AuthService.java — register and login business logic
+- Built AuthController.java — two POST endpoints /register and /login
+- Switched from @Autowired to @RequiredArgsConstructor (constructor injection)
+- Understood: BCrypt one-way hashing, JWT payload structure, Optional.orElseThrow, ResponseEntity, DRY principle
+
+## Tomorrow — Phase 4
+- JwtFilter.java — intercepts every request, validates token
+- SecurityConfig.java — defines public vs protected endpoints
+- PasswordEncoder bean
+- First Postman test — register and login
