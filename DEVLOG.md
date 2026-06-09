@@ -41,8 +41,33 @@
 - Switched from @Autowired to @RequiredArgsConstructor (constructor injection)
 - Understood: BCrypt one-way hashing, JWT payload structure, Optional.orElseThrow, ResponseEntity, DRY principle
 
-## Tomorrow — Phase 4
-- JwtFilter.java — intercepts every request, validates token
-- SecurityConfig.java — defines public vs protected endpoints
-- PasswordEncoder bean
-- First Postman test — register and login
+## June 9, 2026
+
+- Built CustomUserDetailsService.java — bridges Spring Security + MongoDB
+- Built JwtFilter.java — intercepts every request, validates JWT
+- Built SecurityConfig.java — public vs protected endpoints, PasswordEncoder bean
+- Fixed: WeakKeyException — jwt.secret was too short (< 256 bits)
+- Fixed: 403 Forbidden — added SessionCreationPolicy.STATELESS
+- Fixed: SSL/TLS error — added -Djdk.tls.client.protocols=TLSv1.2 JVM arg
+- Fixed: MongoDB Network Access — added 0.0.0.0/0 for development
+
+### First Postman Test — PASSED ✅
+- POST /api/auth/register → 200 "User Registered Successfully"
+- POST /api/auth/login → 200 JWT token returned
+- User document verified in MongoDB Atlas — BCrypt password, all fields correct
+
+### Concepts learned
+- Authentication vs Authorization
+- OncePerRequestFilter — runs exactly once per request
+- SecurityContextHolder — stores authenticated user for request duration
+- CSRF disabled for JWT REST APIs
+- SessionCreationPolicy.STATELESS — JWT apps don't use sessions
+- TLS 1.2 vs TLS 1.3 — Java 21 compatibility with MongoDB Atlas
+- 0.0.0.0/0 vs specific IP — development vs production network access
+
+## Tomorrow — Phase 5
+- LeaveRequest model
+- LeaveBalance model
+- LeaveRepository
+- LeaveService — apply, approve, reject
+- LeaveController — role-based endpoints
