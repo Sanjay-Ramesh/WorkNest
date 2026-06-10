@@ -2,72 +2,120 @@
 
 ## June 5, 2026
 
-- Completed Phase 0 — Full system design
+### Phase 0 — System Design Complete
 - Designed 3 MongoDB documents: User, LeaveRequest, LeaveBalance
 - Mapped 6 MVP modules
 - Designed full API endpoint plan
 - Understood: soft delete, role-based filtering, DTOs, horizontal scaling
-- Completed Phase 1 — Project setup
-- Created package structure, pom.xml with all dependencies
+
+### Phase 1 — Project Setup Complete
+- Created Spring Boot project with all dependencies
+- Created 8 package structure
 - Set up application.properties and .gitignore
-
-## June 5, 2026 — Update
-
+- Created CLAUDE.md, DEVLOG.md, README.md
 - Fixed nested project structure issue
-- Recreated 8 packages in correct location
-- Fixed test package to com.worknest.app
-- All files clean on GitHub
+- First GitHub push — WorkNest repo live
 
 ## June 6, 2026
+
+### Phase 2 — Models + Atlas Complete
 - MongoDB Atlas cluster setup (worknest-cluster, AWS Mumbai)
 - App connected to Atlas successfully
 - Built Role.java — enum with 4 roles
 - Built User.java — MongoDB document with 10 fields
 - Built UserRepository.java — MongoRepository with findByEmail
-- Switched from VS Code to IntelliJ for better Java support
-- Understood: enum vs String, private encapsulation, lazy MongoDB connection, replica sets, Spring Data query derivation
+- Switched from VS Code to IntelliJ IDEA Community Edition
+
+**Concepts learned:**
+- Enum vs String — compile time safety
+- Private encapsulation — @Data generates getters/setters
+- Lazy MongoDB connection
+- Replica sets — 3 servers, automatic failover
+- Spring Data query derivation — findByEmail auto-generates query
 
 ## June 7, 2026
-- Holiday Sunday
+- Holiday
 
 ## June 8, 2026
-- Started Phase 3 — Auth Module
-- Built RegisterRequest.java — DTO with validation annotations
-- Built LoginRequest.java — email + password with @NotBlank
-- Built AuthResponse.java — response DTO with token field
-- Built JwtUtil.java — generateToken, extractEmail, isTokenValid
-- Built AuthService.java — register and login business logic
-- Built AuthController.java — two POST endpoints /register and /login
-- Switched from @Autowired to @RequiredArgsConstructor (constructor injection)
-- Understood: BCrypt one-way hashing, JWT payload structure, Optional.orElseThrow, ResponseEntity, DRY principle
+
+### Phase 3 — Auth Module Complete
+
+**Files built:**
+- RegisterRequest.java — DTO with validation annotations
+- LoginRequest.java — email + password with @NotBlank
+- AuthResponse.java — response DTO with token field
+- JwtUtil.java — generateToken, extractEmail, isTokenValid
+- AuthService.java — register and login business logic
+- AuthController.java — POST /api/auth/register, POST /api/auth/login
+
+**Concepts learned:**
+- BCrypt one-way hashing — never decrypted, only compared
+- JWT payload structure — email, role, issuedAt, expiration
+- Optional.orElseThrow — one DB call vs two
+- ResponseEntity — wraps response with HTTP status
+- @Valid — triggers DTO validation before method runs
+- Constructor injection (@RequiredArgsConstructor) vs @Autowired
+- jjwt 0.11.x vs 0.12.3 API changes
 
 ## June 9, 2026
 
-- Built CustomUserDetailsService.java — bridges Spring Security + MongoDB
-- Built JwtFilter.java — intercepts every request, validates JWT
-- Built SecurityConfig.java — public vs protected endpoints, PasswordEncoder bean
-- Fixed: WeakKeyException — jwt.secret was too short (< 256 bits)
-- Fixed: 403 Forbidden — added SessionCreationPolicy.STATELESS
-- Fixed: SSL/TLS error — added -Djdk.tls.client.protocols=TLSv1.2 JVM arg
-- Fixed: MongoDB Network Access — added 0.0.0.0/0 for development
+### Phase 4 — Security Complete
+
+**Files built:**
+- CustomUserDetailsService.java — bridges Spring Security + MongoDB
+- JwtFilter.java — intercepts every request, validates JWT
+- SecurityConfig.java — public vs protected endpoints, PasswordEncoder bean
+
+**Bugs fixed:**
+- WeakKeyException — jwt.secret was too short (< 256 bits)
+- 403 Forbidden — added SessionCreationPolicy.STATELESS
+- SSL/TLS error — added -Djdk.tls.client.protocols=TLSv1.2 JVM arg
+- MongoDB Network Access — added 0.0.0.0/0 for development
 
 ### First Postman Test — PASSED ✅
 - POST /api/auth/register → 200 "User Registered Successfully"
 - POST /api/auth/login → 200 JWT token returned
 - User document verified in MongoDB Atlas — BCrypt password, all fields correct
 
-### Concepts learned
+**Concepts learned:**
 - Authentication vs Authorization
 - OncePerRequestFilter — runs exactly once per request
 - SecurityContextHolder — stores authenticated user for request duration
 - CSRF disabled for JWT REST APIs
 - SessionCreationPolicy.STATELESS — JWT apps don't use sessions
-- TLS 1.2 vs TLS 1.3 — Java 21 compatibility with MongoDB Atlas
-- 0.0.0.0/0 vs specific IP — development vs production network access
+- TLS 1.2 vs 1.3 — Java 21 compatibility with MongoDB Atlas
 
-## Tomorrow — Phase 5
-- LeaveRequest model
-- LeaveBalance model
-- LeaveRepository
-- LeaveService — apply, approve, reject
-- LeaveController — role-based endpoints
+## June 10, 2026
+
+### Phase 5 — Leave Module Complete
+
+**Files built:**
+- LeaveType.java — enum (CASUAL, SICK, EARNED)
+- LeaveStatus.java — enum (PENDING, APPROVED, REJECTED)
+- LeaveRequest.java — MongoDB document with state machine (PENDING → APPROVED/REJECTED)
+- LeaveBalance.java — MongoDB document with LeaveQuota inner class
+- LeaveRequestRepository.java — findByEmployeeId custom method
+- LeaveBalanceRepository.java — findByEmployeeIdAndYear custom method
+- LeaveRequestDto.java — request DTO with validation
+- LeaveService.java — applyLeave, updateLeaveStatus, getAllLeaves
+- LeaveController.java — POST /apply, PUT /{id}/status, GET
+
+**Also fixed from Phase 4 review:**
+- JwtFilter order corrected — isTokenValid before extractEmail
+- Added null authentication check in JwtFilter
+- Added @EnableMethodSecurity to SecurityConfig
+
+**Concepts learned:**
+- State machine pattern — PENDING → APPROVED/REJECTED, never backwards
+- Static inner class — LeaveQuota inside LeaveBalance
+- Switch expression for enum matching
+- ChronoUnit.DAYS.between() for date calculation
+- List vs Optional — one-to-many vs one-to-one
+- @PathVariable vs @RequestParam
+- Balance deduction only on APPROVED
+
+## Tomorrow — Phase 6
+- HR Admin dashboard APIs
+- MongoDB aggregation pipeline
+- Department-wise leave analytics
+- Today's attendance overview
