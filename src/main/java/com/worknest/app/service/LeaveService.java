@@ -23,6 +23,8 @@ public class LeaveService {
 
     private final LeaveBalanceRepository leaveBalanceRepository;
 
+    private final EmailService emailService;
+
     public String applyLeave(LeaveRequestDto leaveRequestDto){
         User user = userRepository.findByEmployeeId(leaveRequestDto.getEmployeeId()).orElseThrow(() ->
                 new RuntimeException("Employee Id doesn't exists"));
@@ -67,6 +69,8 @@ public class LeaveService {
         return "Leave Applied Successfully";
     }
 
+    // Approves or rejects a PENDING leave request, deducts balance on approval, and emails the employee.
+    // Called by managers or HR_ADMIN via the leave review endpoint.
     public String updateLeaveStatus(String leaveId,
                                     LeaveStatus leaveStatus,
                                     String managerId) {
@@ -101,6 +105,16 @@ public class LeaveService {
             leaveBalanceRepository.save(leaveBalance);
         }
         leaveRequestRepository.save(leaveRequest);
+
+        User employee = userRepository.findByEmployeeId(leaveRequest.getEmployeeId()).orElseThrow(
+                () -> new RuntimeException("Employee not found"));
+
+        emailService.sendLeaveStatusEmail(
+                employee.getEmail(),
+                employee.getName(),
+                leaveRequest.getStatus()
+        );
+
         return "Leave Status updated successfully";
     }
 
