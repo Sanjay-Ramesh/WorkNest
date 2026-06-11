@@ -151,6 +151,8 @@
 - Built EmailService.java — sendLeaveStatusEmail()
 - Updated LeaveService.updateLeaveStatus() — triggers email on APPROVED/REJECTED
 - App running clean
+- Fixed @Document(collection = "leave_balance") mismatch — Spring defaulted to "leaveBalance"
+- Postman verified: apply → approve → email delivered ✅
 
 ## Tomorrow — Phase 8
 - React frontend setup
