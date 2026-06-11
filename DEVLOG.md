@@ -114,8 +114,39 @@
 - @PathVariable vs @RequestParam
 - Balance deduction only on APPROVED
 
-## Tomorrow — Phase 6
-- HR Admin dashboard APIs
-- MongoDB aggregation pipeline
-- Department-wise leave analytics
-- Today's attendance overview
+## June 11, 2026
+
+### Phase 6 — Dashboard Complete
+
+**Files built:**
+- DashboardService.java — 4 analytics methods
+- DashboardController.java — 4 GET endpoints
+
+**Methods built:**
+- getTodayOnLeave() — employees on approved leave today
+- getPendingLeaves() — all PENDING leave requests
+- getLeavesByDepartment() — approved leave count per department using HashMap
+- getLeaveBalanceSummary() — average remaining balance per leave type using streams
+
+**Also updated:**
+- LeaveRequestRepository.java — added findByStatus() and findByStartDateLessThanEqualAndEndDateGreaterThanEqualAndStatus()
+
+**Postman Tests — PASSED ✅**
+- GET /api/dashboard/pendingleaves → 200 OK
+- GET /api/dashboard/todayleave → 200 OK
+- GET /api/dashboard/department → 200 OK
+- GET /api/dashboard/summary → 200 OK (sick: 0.0, earned: 0.0, casual: 0.0)
+
+**Concepts learned:**
+- Stream API — processes list items one by one through a pipeline
+- mapToDouble() — extracts double value from each object in stream
+- average().orElse(0.0) — calculates average, returns 0 if empty
+- HashMap.merge() — increments count if key exists, creates if not
+- Map.of() — creates immutable map with fixed key-value pairs
+- Java stream vs for loop — same result, stream is cleaner and modern
+
+## Tomorrow — Phase 7
+- JavaMailSender setup in application.properties
+- Email notification on leave APPROVED
+- Email notification on leave REJECTED
+- Update LeaveService.updateLeaveStatus to trigger email
