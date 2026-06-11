@@ -145,8 +145,14 @@
 - Map.of() — creates immutable map with fixed key-value pairs
 - Java stream vs for loop — same result, stream is cleaner and modern
 
-## Tomorrow — Phase 7
-- JavaMailSender setup in application.properties
-- Email notification on leave APPROVED
-- Email notification on leave REJECTED
-- Update LeaveService.updateLeaveStatus to trigger email
+### Phase 7 — Email Notifications Complete
+- Added spring-boot-starter-mail dependency
+- Configured Gmail SMTP in application.properties
+- Built EmailService.java — sendLeaveStatusEmail()
+- Updated LeaveService.updateLeaveStatus() — triggers email on APPROVED/REJECTED
+- App running clean
+
+## Tomorrow — Phase 8
+- React frontend setup
+- Login page
+- Role-based routing
