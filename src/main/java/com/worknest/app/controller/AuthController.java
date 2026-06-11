@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    // @Valid triggers Bean Validation — all @NotBlank / @Email annotations on the DTO are enforced here
     @PostMapping("/register")
     public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest registerRequest){
         return new ResponseEntity<>(authService.register(registerRequest), HttpStatus.OK);

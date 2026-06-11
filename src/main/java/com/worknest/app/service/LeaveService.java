@@ -27,6 +27,7 @@ public class LeaveService {
         User user = userRepository.findByEmployeeId(leaveRequestDto.getEmployeeId()).orElseThrow(() ->
                 new RuntimeException("Employee Id doesn't exists"));
 
+        // Managers and HR_ADMIN are not allowed to submit leave requests
         if(user.getRole() != Role.EMPLOYEE)
             throw new RuntimeException("Only Employees can apply");
 
@@ -35,6 +36,7 @@ public class LeaveService {
         LeaveBalance leaveBalance = leaveBalanceRepository.findByEmployeeIdAndYear(leaveRequestDto.getEmployeeId(), currentYear).orElseThrow(() ->
                 new RuntimeException("Leave Balance not found"));
 
+        // Pick the correct quota bucket based on the requested leave type
         LeaveBalance.LeaveQuota quota = switch (leaveRequestDto.getLeaveType()) {
             case CASUAL -> leaveBalance.getCasual();
             case SICK -> leaveBalance.getSick();
@@ -44,6 +46,7 @@ public class LeaveService {
         if(quota.getRemaining() <= 0)
             throw new RuntimeException("Insufficient Leave Balance");
 
+        // +1 because ChronoUnit.DAYS.between is end-exclusive (e.g. Mon–Mon = 0 days without +1)
         int totalDays = (int) ChronoUnit.DAYS.between(
                 leaveRequestDto.getStartDate(),
                 leaveRequestDto.getEndDate()
@@ -70,6 +73,7 @@ public class LeaveService {
         LeaveRequest leaveRequest = leaveRequestRepository.findById(leaveId).orElseThrow(() ->
                 new RuntimeException("Leave Request not found"));
 
+        // Guard against re-processing — an APPROVED or REJECTED leave cannot be changed again
         if(leaveRequest.getStatus() != LeaveStatus.PENDING){
             throw new RuntimeException("Leave already processed");
         }
@@ -78,6 +82,7 @@ public class LeaveService {
         leaveRequest.setReviewedBy(managerId);
         leaveRequest.setReviewedAt(LocalDateTime.now());
 
+        // Deduct from balance only on APPROVED — REJECTED leaves do not consume quota
         if(leaveStatus == LeaveStatus.APPROVED){
             LeaveBalance leaveBalance =leaveBalanceRepository.findByEmployeeIdAndYear(leaveRequest.getEmployeeId(),
                     LocalDate.now().getYear()).orElseThrow(() ->
@@ -89,6 +94,7 @@ public class LeaveService {
                 case EARNED -> leaveBalance.getEarned();
             };
 
+            // TODO: should deduct totalDays, not 1 — currently a multi-day leave only consumes 1 from balance
             quota.setUsed(quota.getUsed() + 1);
             quota.setRemaining(quota.getRemaining() - 1);
 
@@ -98,6 +104,7 @@ public class LeaveService {
         return "Leave Status updated successfully";
     }
 
+    // HR_ADMIN sees all requests across the org; employees see only their own
     public List<LeaveRequest> getAllLeaves(String employeeId, Role role){
         if(role == Role.HR_ADMIN)
             return leaveRequestRepository.findAll();

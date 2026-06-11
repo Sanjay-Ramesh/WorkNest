@@ -24,7 +24,7 @@ public class LeaveRequest {
     private LocalDate endDate;
     private int totalDays;
     private String reason;
-    private LeaveStatus status = LeaveStatus.PENDING;
+    private LeaveStatus status = LeaveStatus.PENDING; // default on creation; updated to APPROVED/REJECTED by manager
     private String reviewedBy;
     private LocalDateTime reviewedAt;
     private LocalDateTime createdAt;

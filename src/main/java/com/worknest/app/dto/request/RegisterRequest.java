@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+// @NotBlank = non-null AND non-empty string; @NotNull = non-null only (used for non-String types like Role, LocalDate)
 public class RegisterRequest {
     @NotBlank
     private String employeeId;

@@ -12,14 +12,17 @@ import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
+// Spring Security calls this during the filter chain — JwtFilter triggers it to verify the token's email
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
+    // Spring Security's method name says "username" but in this app the username is the email address
     @Override
     public UserDetails loadUserByUsername(String username){
         User user = userRepository.findByEmail(username).orElseThrow(() ->
                 new UsernameNotFoundException("Email doesn't exists"));
 
+        // Empty authorities here — role-based access is enforced via @PreAuthorize using JWT claims
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),

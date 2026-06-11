@@ -21,6 +21,7 @@ public class JwtUtil {
     private long expiration;
     private SecretKey secretKey;
 
+    // @PostConstruct runs after @Value injection completes — SecretKey can't be built at field declaration time
     @PostConstruct
     public void init() {
         this.secretKey = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
@@ -45,6 +46,7 @@ public class JwtUtil {
                 .getSubject();
     }
 
+    // jjwt throws JwtException on expired or malformed tokens — catch is the intended validation pattern
     public boolean isTokenValid(String token){
         try{
             extractEmail(token);

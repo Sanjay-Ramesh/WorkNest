@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+// totalDays is intentionally absent — calculated server-side in LeaveService to prevent client tampering
 public class LeaveRequestDto {
     @NotBlank
     private String employeeId;

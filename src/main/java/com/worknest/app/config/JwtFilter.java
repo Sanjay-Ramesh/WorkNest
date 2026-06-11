@@ -26,16 +26,19 @@ public class JwtFilter extends OncePerRequestFilter {
                                                   HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
+        // Skip JWT processing for requests without a Bearer token (public routes pass through)
         if(authHeader != null && authHeader.startsWith("Bearer ")){
             String token = authHeader.substring(7);
             if (jwtUtil.isTokenValid(token)){
                 String email = jwtUtil.extractEmail(token);
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                // Avoid overwriting an existing authentication already set earlier in the filter chain
                 if(SecurityContextHolder.getContext().getAuthentication() == null)
                     SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+        // Always continue the chain — SecurityConfig decides what gets blocked, not this filter
         filterChain.doFilter(request, response);
     }
 }

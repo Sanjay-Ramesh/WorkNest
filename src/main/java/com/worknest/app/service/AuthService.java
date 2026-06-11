@@ -22,6 +22,7 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public String register(RegisterRequest registerRequest){
+        // Reject duplicate emails before any DB write
         if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()){
             throw new RuntimeException("Email already exists");
         }
@@ -34,7 +35,7 @@ public class AuthService {
                 .role(registerRequest.getRole())
                 .department(registerRequest.getDepartment())
                 .joinedDate(registerRequest.getJoinedDate())
-                .isActive(true)
+                .isActive(true) // accounts are active on creation; admins can deactivate later
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -47,6 +48,7 @@ public class AuthService {
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(() ->
                 new RuntimeException("Email doesn't exists"));
 
+        // matches() hashes the raw input and compares it to the stored BCrypt hash — not a plain string check
         if(!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())){
             throw new RuntimeException("Password doesn't match");
         }

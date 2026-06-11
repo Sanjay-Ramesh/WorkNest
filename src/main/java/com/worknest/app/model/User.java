@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @Builder
 public class User {
     @Id
-    private String id;
-    private String employeeId;
+    private String id; // MongoDB auto-generated ObjectId — not exposed to users
+    private String employeeId; // human-readable HR identifier (e.g. "EMP001") used across the app
     private String name;
     @Email
     private String email;
@@ -24,6 +24,6 @@ public class User {
     private Role role;
     private String department;
     private LocalDate joinedDate;
-    private boolean isActive;
+    private boolean isActive; // soft deactivation flag — account stays in DB but access is blocked
     private LocalDateTime createdAt;
 }

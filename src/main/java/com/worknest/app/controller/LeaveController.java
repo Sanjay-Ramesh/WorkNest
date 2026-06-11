@@ -23,6 +23,7 @@ public class LeaveController {
         return new ResponseEntity<>(leaveService.applyLeave(leaveRequestDto), HttpStatus.OK);
     }
 
+    // id comes from the URL path; leaveStatus and managerId come from query params
     @PutMapping("/{id}/status")
     public ResponseEntity<String> updateLeaveStatus(@PathVariable String id,
                                                     @RequestParam LeaveStatus leaveStatus,
