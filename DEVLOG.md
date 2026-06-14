@@ -154,6 +154,10 @@
 - Fixed @Document(collection = "leave_balance") mismatch — Spring defaulted to "leaveBalance"
 - Postman verified: apply → approve → email delivered ✅
 
+## June 14, 2026
+
+- Holiday
+
 ## Tomorrow — Phase 8
 - React frontend setup
 - Login page

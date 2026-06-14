@@ -53,7 +53,7 @@ public class AuthService {
             throw new RuntimeException("Password doesn't match");
         }
 
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getName(), user.getRole());
 
         return new AuthResponse(token);
     }
