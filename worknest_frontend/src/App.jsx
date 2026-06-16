@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard"
 import ProtectedRoute from "./routes/ProtectedRoute";
 import ApplyLeave from "./pages/ApplyLeave"
+import MyLeaves from "./pages/MyLeaves";
 
 function App() {
   return (
@@ -17,6 +18,10 @@ function App() {
           <ProtectedRoute>
             <ApplyLeave />
           </ProtectedRoute>} />
+          <Route path = "/myleaves" element = {
+            <ProtectedRoute>
+              <MyLeaves />
+            </ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>
   )
