@@ -1,9 +1,10 @@
-import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useState, useContext } from "react"
+import { ThemeContext } from "../context/ThemeContext"
 
 function Login() {
-    const [isDark, setIsDark] = useState(true);
+    const { isDark, setIsDark } = useContext(ThemeContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 

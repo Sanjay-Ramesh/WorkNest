@@ -154,11 +154,69 @@
 - Fixed @Document(collection = "leave_balance") mismatch — Spring defaulted to "leaveBalance"
 - Postman verified: apply → approve → email delivered ✅
 
+## June 12, 2026
+- Phase 7 Postman testing completed
+- Fixed @Document(collection = "leave_balance") mismatch
+- Registered MGR001 (MANAGER role) for testing
+- Applied leave as EMP001 → Approved by MGR001 → Email delivered ✅
+- Git commit: Phase 7 complete
+
+## June 13, 2026
+
+### Phase 8 — React Frontend Started
+**Setup:**
+- Created Vite + React project (worknest_frontend)
+- Installed Tailwind CSS (@tailwindcss/vite), Axios, React Router DOM
+- Configured vite.config.js and index.css
+
+**Login page built:**
+- Dark/light theme toggle using useState
+- Controlled inputs (email, password) with onChange
+- Axios POST to /api/auth/login
+- JWT token stored in localStorage
+- useNavigate to redirect to /dashboard on success
+- CORS configured in SecurityConfig for localhost:5173
+
+**Concepts learned:**
+- JSX and className vs class
+- useState — why normal variables don't trigger re-render
+- Controlled inputs — value + onChange
+- e.target.value — event object
+- async/await — waiting for API response
+- localStorage — browser-side persistent storage
+- React Router — URL to page mapping
+- absolute/relative positioning in Tailwind
+- Template literals for dynamic classNames
+
 ## June 14, 2026
 
 - Holiday
 
-## Tomorrow — Phase 8
-- React frontend setup
-- Login page
-- Role-based routing
+## June 15, 2026
+
+### Phase 8 — Dashboard + Sidebar Complete
+**Files built:**
+- ThemeContext.jsx — global dark/light state using createContext
+- ProtectedRoute.jsx — checks token existence + expiry, redirects to login
+- Dashboard.jsx — layout with sidebar + main content
+- Sidebar.jsx — reusable component with nav links + logout
+
+**Features:**
+- JWT decoded using jwt-decode — name + role extracted
+- Logout — clears localStorage token, redirects to login
+- Protected Route — expired/missing token redirects to login
+- Sidebar extracted as reusable component
+
+**Concepts learned:**
+- createContext + useContext — global state without prop drilling
+- Context Provider — wraps app in main.jsx
+- Named vs default exports
+- Link vs a href — no page reload with Link
+- mt-auto — pushes element to bottom in flex column
+- flex-1 — fills remaining space
+- Children prop — component wrapper pattern
+
+## June 16, 2026
+
+### Phase 8 — In Progress
+- Leave balance cards — in progress
