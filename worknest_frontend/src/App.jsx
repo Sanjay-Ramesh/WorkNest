@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard"
 import ProtectedRoute from "./routes/ProtectedRoute";
+import ApplyLeave from "./pages/ApplyLeave"
 
 function App() {
   return (
@@ -11,6 +12,10 @@ function App() {
         <Route path = "/dashboard" element = {
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>} />
+        <Route path = "/applyleave" element = {
+          <ProtectedRoute>
+            <ApplyLeave />
           </ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
