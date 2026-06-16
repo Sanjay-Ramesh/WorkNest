@@ -36,4 +36,9 @@ public class LeaveController {
     public ResponseEntity<List<LeaveRequest>> getAllLeaves(@RequestParam String employeeId, @RequestParam Role role){
         return new ResponseEntity<>(leaveService.getAllLeaves(employeeId, role), HttpStatus.OK);
     }
+
+    @GetMapping("/balance")
+    public ResponseEntity<?> getLeaveBalance(@RequestParam String employeeId){
+        return new ResponseEntity<>(leaveService.getLeaveBalance(employeeId), HttpStatus.OK);
+    }
 }

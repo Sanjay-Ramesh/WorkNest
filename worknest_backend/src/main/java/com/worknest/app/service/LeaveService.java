@@ -125,4 +125,11 @@ public class LeaveService {
         else
             return leaveRequestRepository.findByEmployeeId(employeeId);
     }
+
+    public LeaveBalance getLeaveBalance(String employeeId){
+        int currentYear = LocalDate.now().getYear();
+        LeaveBalance leaveBalance = leaveBalanceRepository.findByEmployeeIdAndYear(employeeId, currentYear).orElseThrow(() ->
+                new RuntimeException("Leave Balance not found"));
+        return leaveBalance;
+    }
 }

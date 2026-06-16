@@ -218,5 +218,36 @@
 
 ## June 16, 2026
 
-### Phase 8 — In Progress
-- Leave balance cards — in progress
+### Phase 8 — Frontend Progress
+- My Leaves page — table with APPROVED/REJECTED/PENDING color badges
+- Apply Leave page — form with success message, styled
+- Manager Dashboard — started, PENDING filter added
+- Routes added for all pages in App.jsx
+- Leave balance endpoint added to backend (GET /api/leaves/balance)
+- employeeId and name added to JWT claims
+- ThemeContext — global dark/light state using createContext
+- ProtectedRoute — checks token existence + expiry, redirects to login
+- Dashboard layout — Sidebar + leave balance cards
+- Sidebar extracted as reusable component with Logout
+- JWT decode using jwt-decode library
+
+**Concepts learned:**
+- useEffect — run code on component load
+- .map() — render lists in JSX
+- .filter() — filter array before rendering
+- key prop — why React needs unique keys
+- {} vs () in arrow functions
+- span vs div — inline vs block
+- createContext + useContext — global state
+- Children prop — component wrapper pattern
+- Link vs a href — no page reload
+- mt-auto — pushes element to bottom in flex
+- localStorage — browser persistent storage
+- async/await — waiting for API response
+- axios headers — passing JWT to protected endpoints
+
+## June 17, 2026
+
+### Phase 8 — Frontend Progress
+- Manager Dashboard — handleApprove and handleReject functions
+- (rest to be filled tomorrow)
