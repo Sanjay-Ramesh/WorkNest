@@ -1,6 +1,11 @@
 import {Link, useNavigate} from "react-router-dom";
+import {jwtDecode} from "jwt-decode";
 
 function Sidebar() {
+    const token = localStorage.getItem("token");
+    const decoded = jwtDecode(token);
+    const role = decoded.role;
+
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -14,6 +19,7 @@ function Sidebar() {
             <Link to="/dashboard">Dashboard</Link>
             <Link to="/applyleave">Apply Leave</Link>
             <Link to="/myleaves">My Leaves</Link>
+            {role !== "EMPLOYEE" && <Link to="/managerdashboard">Manager Dashboard</Link>}
             <Link to="/Profile">Profile</Link>
             <button onClick={handleLogout} className="mt-auto">Logout</button>
         </div>

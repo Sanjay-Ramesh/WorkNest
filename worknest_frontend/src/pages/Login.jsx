@@ -2,11 +2,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useState, useContext } from "react"
 import { ThemeContext } from "../context/ThemeContext"
+import {jwtDecode} from "jwt-decode";
 
 function Login() {
     const { isDark, setIsDark } = useContext(ThemeContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+
 
     const navigate = useNavigate();
 
@@ -18,7 +21,11 @@ function Login() {
 
         const token = response.data.token;
         localStorage.setItem("token", token);
-        navigate("/dashboard");
+        const decoded = jwtDecode(token);
+        if(decoded.role === "EMPLOYEE")
+            navigate("/dashboard");
+        else
+            navigate("/managerdashboard");
     }
 
     const bgClass = isDark

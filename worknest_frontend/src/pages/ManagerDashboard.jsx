@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
+import {jwtDecode} from "jwt-decode";
 
 function ManagerDashboard() {
     const token = localStorage.getItem("token");
@@ -10,17 +11,31 @@ function ManagerDashboard() {
 
     const [leaves, setLeaves] = useState([]);
 
+    const approveClass = "bg-green-500 text-white px-3 py-1 rounded mr-2";
+    const rejectClass = "bg-red-500 text-white px-3 py-1 rounded";
+
+    const fetchLeaves = async () => {
+        const response = await axios.get("http://localhost:8080/api/leaves", {
+            params : {
+                employeeId : managerId,
+                role : role
+            },
+            headers : { Authorization : `Bearer ${token}`}
+        })
+        setLeaves(response.data)
+    }
+
+    const handleApprove = async (leaveId, leaveStatus) => {
+        const response = await axios.put(`http://localhost:8080/api/leaves/${leaveId}/status`, null, {
+            params : {managerId : managerId,
+                leaveStatus : leaveStatus
+            },
+            headers: {Authorization: `Bearer ${token}`} }
+        )
+        fetchLeaves();
+    }
+
     useEffect(() => {
-        const fetchLeaves = async () => {
-            const response = await axios.get("http://localhost:8080/api/leaves", {
-                params : {
-                    employeeId : managerId,
-                    role : role
-                },
-                headers : { Authorization : `Bearer ${token}`}
-            })
-            setLeaves(response.data)
-        }
         fetchLeaves()
     }, []);
 
@@ -37,6 +52,7 @@ function ManagerDashboard() {
                             <th className="p-3 text-left">Start Date</th>
                             <th className="p-3 text-left">End Date</th>
                             <th className="p-3 text-left">Reason</th>
+                            <th className="p-3 text-left">Approve/Reject</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,8 +66,8 @@ function ManagerDashboard() {
                                 <td className="p-3">{leave.endDate}</td>
                                 <td className="p-3">{leave.reason}</td>
                                 <td className="p-3">
-                                    <button>Approve</button>
-                                    <button>Reject</button>
+                                    <button onClick={() => handleApprove(leave.id, "APPROVED")} className={approveClass}>Approve</button>
+                                    <button onClick={() => handleApprove(leave.id, "REJECTED")} className={rejectClass}>Reject</button>
                                 </td>
                             </tr>
                         ))
@@ -62,3 +78,5 @@ function ManagerDashboard() {
         </div>
     )
 }
+
+export default ManagerDashboard;
