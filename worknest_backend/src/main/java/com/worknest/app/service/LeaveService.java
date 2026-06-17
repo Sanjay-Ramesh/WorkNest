@@ -120,7 +120,7 @@ public class LeaveService {
 
     // HR_ADMIN sees all requests across the org; employees see only their own
     public List<LeaveRequest> getAllLeaves(String employeeId, Role role){
-        if(role == Role.HR_ADMIN)
+        if(role == Role.HR_ADMIN || role == Role.MANAGER)
             return leaveRequestRepository.findAll();
         else
             return leaveRequestRepository.findByEmployeeId(employeeId);

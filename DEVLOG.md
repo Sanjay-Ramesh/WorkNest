@@ -248,6 +248,33 @@
 
 ## June 17, 2026
 
-### Phase 8 — Frontend Progress
-- Manager Dashboard — handleApprove and handleReject functions
-- (rest to be filled tomorrow)
+### Phase 8 — Manager Dashboard + Role-Based Routing Complete
+
+**Manager Dashboard:**
+- handleApprove/handleReject — single function using leaveStatus parameter
+- Fixed backend bug: getAllLeaves now returns all leaves for MANAGER role (previously only returned manager's own leaves)
+- Approve (green) / Reject (red) buttons styled
+- Auto-refresh table after action via fetchLeaves() re-call
+
+**Role-Based Routing:**
+- Login redirect — EMPLOYEE → /dashboard, MANAGER/HR_ADMIN/SUPER_ADMIN → /managerdashboard
+- Sidebar — Manager Dashboard link conditionally shown based on role
+- ProtectedRoute upgraded — accepts allowedRoles prop, blocks unauthorized roles
+- Fixed UX — unauthorized role access redirects to /dashboard (not login), since user is still authenticated
+
+**Decisions:**
+- MANAGER can apply for own leave (Dashboard/ApplyLeave/MyLeaves open to all roles)
+- HR_ADMIN/SUPER_ADMIN temporarily use Manager Dashboard until dedicated pages built
+
+**Concepts learned:**
+- .includes() array method
+- Short-circuit evaluation with && for optional props
+- Passing custom props through wrapper components
+- localStorage shared across browser tabs (not per-tab) — clarified as testing limitation, not production bug
+- CI/CD basics — Railway/Vercel auto-deploy as built-in CD, GitHub Actions for full CI (V2 addition)
+
+## June 18, 2026 (Planned)
+
+- Error handling (Login — wrong credentials, network errors)
+- Profile page
+- Loading states

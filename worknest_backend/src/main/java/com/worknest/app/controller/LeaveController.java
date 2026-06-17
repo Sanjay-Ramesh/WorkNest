@@ -31,7 +31,6 @@ public class LeaveController {
         return new ResponseEntity<>(leaveService.updateLeaveStatus(id, leaveStatus, managerId), HttpStatus.OK);
     }
 
-
     @GetMapping
     public ResponseEntity<List<LeaveRequest>> getAllLeaves(@RequestParam String employeeId, @RequestParam Role role){
         return new ResponseEntity<>(leaveService.getAllLeaves(employeeId, role), HttpStatus.OK);
