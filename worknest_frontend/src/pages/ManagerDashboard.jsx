@@ -10,6 +10,7 @@ function ManagerDashboard() {
     const role = decoded.role;
 
     const [leaves, setLeaves] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const approveClass = "bg-green-500 text-white px-3 py-1 rounded mr-2";
     const rejectClass = "bg-red-500 text-white px-3 py-1 rounded";
@@ -23,6 +24,7 @@ function ManagerDashboard() {
             headers : { Authorization : `Bearer ${token}`}
         })
         setLeaves(response.data)
+        setLoading(false);
     }
 
     const handleApprove = async (leaveId, leaveStatus) => {
@@ -44,6 +46,7 @@ function ManagerDashboard() {
             <Sidebar />
             <div className="bg-gray-50 flex-1 p-8">
                 <h1 className="text-2xl font-bold mb-6">Manager Dashboard</h1>
+                {loading && <p>Loading...</p>}
                 <table className="w-full border-collapse">
                     <thead>
                         <tr className="bg-gray-200">

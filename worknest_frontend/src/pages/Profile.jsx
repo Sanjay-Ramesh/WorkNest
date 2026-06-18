@@ -9,6 +9,7 @@ function Profile(){
     const employeeId = decoded.employeeId;
 
     const [profile, setProfile] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -17,6 +18,7 @@ function Profile(){
                 headers:{ Authorization : `Bearer ${token}`}
             })
             setProfile(response.data);
+            setLoading(false);
         }
         fetchProfile()
     }, []);
@@ -26,6 +28,7 @@ function Profile(){
             <Sidebar />
             <div className="bg-gray-50 flex-1 p-8">
                 <h1>Profile</h1>
+                {loading && <p>Loading...</p>}
                 {profile && (
                     <div className="flex gap-4 mt-6">
                         <div className="bg-white p-6 rounded-lg shadow w-96 mt-6">

@@ -9,6 +9,7 @@ function Dashboard() {
     const employeeId = decoded.employeeId;
 
     const [balance, setBalance] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchBalance = async () => {
@@ -17,6 +18,7 @@ function Dashboard() {
             headers:{ Authorization: `Bearer ${token}` }
         })
         setBalance(response.data);
+        setLoading(false);
         }
         fetchBalance()
     }, []);
@@ -27,6 +29,7 @@ function Dashboard() {
             
             <div className="bg-gray-50 flex-1 p-8">
                 <h1>Welcome, {decoded.name}</h1>
+                {loading && <p>Loading...</p>}
                 {balance && (
                     <div className="flex gap-4 mt-6">
                         <div className="bg-white p-6 rounded-lg shadow w-48">

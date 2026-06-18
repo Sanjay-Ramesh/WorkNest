@@ -10,6 +10,7 @@ function MyLeaves() {
     const role = decoded.role;
 
     const [leaves, setLeaves] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchLeaves = async () => {
@@ -19,7 +20,8 @@ function MyLeaves() {
                 },
                 headers:{ Authorization: `Bearer ${token}`}
             })
-            setLeaves(response.data)
+            setLeaves(response.data);
+            setLoading(false);
         }
         fetchLeaves()
     }, []);
@@ -29,6 +31,7 @@ function MyLeaves() {
             <Sidebar />
             <div className="bg-gray-50 flex-1 p-8">
                 <h1 className="text-2xl font-bold mb-6">My Leaves</h1>
+                {loading && <p>Loading...</p>}
                 <table className="w-full border-collapse">
                     <thead>
                         <tr className="bg-gray-200">

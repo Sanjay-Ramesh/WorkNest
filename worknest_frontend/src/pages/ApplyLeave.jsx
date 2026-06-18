@@ -13,10 +13,12 @@ function ApplyLeave() {
     const [endDate, setEndDate] = useState("");
     const [reason, setReason] = useState("");
     const [message, setMessage] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const applyLeaveClass = "border border-gray-300 rounded p-2 w-96";
 
     const handleSubmit = async () => {
+        setLoading(true);
         const response = await axios.post("http://localhost:8080/api/leaves/apply", {
             employeeId : employeeId,
             leaveType : leaveType,
@@ -28,6 +30,7 @@ function ApplyLeave() {
         headers : { Authorization : `Bearer ${token}` }
     })
     setMessage("Leave Applied Successfully")
+    setLoading(false);
     } 
 
     return (
@@ -46,7 +49,7 @@ function ApplyLeave() {
                         <input className={applyLeaveClass} type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                         <input className={applyLeaveClass} type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                         <input className={applyLeaveClass} type="text" placeholder="reason" value={reason} onChange={(e) => setReason(e.target.value)} />
-                        <button className="bg-blue-600 text-white p-2 rounded w-96" onClick={handleSubmit}>Submit</button>
+                        <button className="bg-blue-600 text-white p-2 rounded w-96" disabled={loading} onClick={handleSubmit}>{loading? "Submitting..." : "Submit"}</button>
                         {message && <p className="text-green-600">{message}</p>}
                     </div>
                 </div>
