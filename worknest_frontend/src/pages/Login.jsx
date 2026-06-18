@@ -9,12 +9,13 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-
+    const [error, setError] = useState("");
 
     const navigate = useNavigate();
 
     const handleLogin = async () => {
-        const response = await axios.post("http://localhost:8080/api/auth/login", {
+        try{
+            const response = await axios.post("http://localhost:8080/api/auth/login", {
             email : email,
             password : password
         })
@@ -26,6 +27,11 @@ function Login() {
             navigate("/dashboard");
         else
             navigate("/managerdashboard");
+        }
+
+        catch(e){
+            setError("Invalid Email or Password");
+        }   
     }
 
     const bgClass = isDark
@@ -54,6 +60,7 @@ function Login() {
                 onChange = {(e) => setPassword(e.target.value)}
                 className={inputClass}/>
                 <button onClick={handleLogin} className="bg-blue-600 text-white p-2 rounded w-full">Login</button>
+                {error && <p className="text-red-500">{error}</p>}
             </div>
         </div>
     )
