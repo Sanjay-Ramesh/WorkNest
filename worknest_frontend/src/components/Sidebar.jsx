@@ -20,7 +20,7 @@ function Sidebar() {
             <Link to="/applyleave">Apply Leave</Link>
             <Link to="/myleaves">My Leaves</Link>
             {role !== "EMPLOYEE" && <Link to="/managerdashboard">Manager Dashboard</Link>}
-            <Link to="/Profile">Profile</Link>
+            <Link to="/profile">Profile</Link>
             <button onClick={handleLogout} className="mt-auto">Logout</button>
         </div>
     )

@@ -5,6 +5,7 @@
   import ApplyLeave from "./pages/ApplyLeave"
   import MyLeaves from "./pages/MyLeaves";
   import ManagerDashboard from "./pages/ManagerDashboard";
+  import Profile from "./pages/Profile";
 
   function App() {
     return (
@@ -26,6 +27,10 @@
           <Route path="/managerdashboard" element = {
             <ProtectedRoute  allowedRoles = {["MANAGER", "HR_ADMIN", "SUPER_ADMIN"]}>
               <ManagerDashboard />
+            </ProtectedRoute>} />
+          <Route path="/profile" element = {
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
