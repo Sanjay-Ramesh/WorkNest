@@ -32,14 +32,14 @@ function Profile(){
                 {profile && (
                     <div className="flex gap-4 mt-6">
                         <div className="bg-white p-6 rounded-lg shadow w-96 mt-6">
-                            <p><strong>Employee ID:</strong>{profile.employeeId}</p>
-                            <p><strong>Name:</strong>{profile.name}</p>
-                            <p><strong>Email:</strong>{profile.email}</p>
-                            <p><strong>Role:</strong>{profile.role}</p>
-                            <p><strong>Department:</strong>{profile.department}</p>
-                            <p><strong>Joined Date:</strong>{profile.joinedDate}</p>
-                            <p><strong>Active:</strong>{profile.active ? "Yes":"No"}</p>
-                            <p><strong>Created At:</strong>{profile.createdAt}</p>
+                            <p><strong>Employee ID: </strong>{profile.employeeId}</p>
+                            <p><strong>Name:        </strong>{profile.name}</p>
+                            <p><strong>Email:       </strong>{profile.email}</p>
+                            <p><strong>Role:        </strong>{profile.role}</p>
+                            <p><strong>Department:  </strong>{profile.department}</p>
+                            <p><strong>Joined Date: </strong>{profile.joinedDate}</p>
+                            <p><strong>Active:      </strong>{profile.active ? "Yes":"No"}</p>
+                            <p><strong>Created At:  </strong>{profile.createdAt}</p>
                         </div>
                     </div>
                 )}

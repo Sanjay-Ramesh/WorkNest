@@ -5,7 +5,7 @@ import { ThemeContext } from "../context/ThemeContext"
 import {jwtDecode} from "jwt-decode";
 
 function Login() {
-    const { isDark, setIsDark } = useContext(ThemeContext);
+    //const { isDark, setIsDark } = useContext(ThemeContext);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -34,21 +34,25 @@ function Login() {
         }   
     }
 
-    const bgClass = isDark
+    const bgClass = "bg-gray-50 min-h-screen flex items-center justify-center";
+    /*isDark
     ? "bg-neutral-900 min-h-screen flex items-center justify-center"
-    : "bg-gray-50 min-h-screen flex items-center justify-center"
+    :*/ 
 
-    const cardClass = isDark 
+    const cardClass = "bg-white p-8 rounded-lg w-96 flex flex-col gap-3"
+    /*isDark 
     ? "bg-neutral-700 p-8 rounded-lg w-96 text-white flex flex-col gap-3"
-    : "bg-white p-8 rounded-lg w-96 flex flex-col gap-3"
+    :*/ 
 
-    const inputClass = isDark
+    const inputClass = "border border-gray-300 rounded p-2 w-full"
+    /*isDark
     ? "border border-neutral-600 text-white rounded p-2 w-full border border-neutral-500"
-    : "border border-gray-300 rounded p-2 w-full"
+    :*/ 
 
     return (
         <div className={bgClass}>
-            <button onClick={() => setIsDark(!isDark)} className={`absolute top-4 right-4 text-sm border px-3 py-1 rounded ${isDark ? "text-white border-white" : "text-gray-800 border-gray-400"}`}>Toggle Theme</button>
+
+           {/* <button onClick={() => setIsDark(!isDark)} className={`absolute top-4 right-4 text-sm border px-3 py-1 rounded ${isDark ? "text-white border-white" : "text-gray-800 border-gray-400"}`}>Toggle Theme</button> */}
             <div className={cardClass}>
                 <h1 className="text-2xl font-bold text-center">WorkNest</h1>
                 <input type="email" placeholder="Email" 

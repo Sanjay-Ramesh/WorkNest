@@ -6,6 +6,7 @@
   import MyLeaves from "./pages/MyLeaves";
   import ManagerDashboard from "./pages/ManagerDashboard";
   import Profile from "./pages/Profile";
+  import HRDashboard from "./pages/HRDashboard";
 
   function App() {
     return (
@@ -31,6 +32,10 @@
           <Route path="/profile" element = {
             <ProtectedRoute>
               <Profile />
+            </ProtectedRoute>} />
+          <Route path="/hrdashboard" element = {
+            <ProtectedRoute allowedRoles={["HR_ADMIN", "SUPER_ADMIN"]}>
+              <HRDashboard />
             </ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
