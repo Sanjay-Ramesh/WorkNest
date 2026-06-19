@@ -273,8 +273,43 @@
 - localStorage shared across browser tabs (not per-tab) — clarified as testing limitation, not production bug
 - CI/CD basics — Railway/Vercel auto-deploy as built-in CD, GitHub Actions for full CI (V2 addition)
 
-## June 18, 2026 (Planned)
+## June 18, 2026
 
-- Error handling (Login — wrong credentials, network errors)
-- Profile page
-- Loading states
+### Phase 8 — Frontend Complete
+
+**Login error handling:**
+- try-catch added to handleLogin
+- Shows "Invalid Email or Password" below Login button on failed attempts
+
+**Profile page:**
+- Backend: UserController + UserService + ProfileResponse DTO (excludes password field)
+- Frontend: Profile.jsx displays all user fields, active rendered as "Yes/No" (React doesn't render booleans)
+- Fixed route casing /Profile → /profile
+
+**Loading states:**
+- Dashboard, MyLeaves, ManagerDashboard, Profile — fetch-on-load pattern
+- ApplyLeave — submit-on-click pattern, button disables + shows "Submitting..." during request
+
+**HR Dashboard:**
+- HRDashboard.jsx — 4 sections: Today Leaves, Pending Leaves, Department Breakdown, Leave Balance Summary
+- Promise.all() for parallel fetching, single setLoading(false) after all 4 complete
+- Object.entries() for iterating Map<String, Long/Double> responses (department/summary data)
+- Sidebar updated — HR Dashboard link visible only to HR_ADMIN/SUPER_ADMIN
+- Fixed operator precedence bug (|| vs &&) without parentheses
+- Tested end-to-end with HR001 account — all 4 sections working
+
+**Design decision:**
+- Reviewed worknest_mockup.html (dark theme, emerald green, stat cards, AI insight)
+- V1 ships with current simple styling (June 25 deadline)
+- Full visual redesign → V1.5 immediately after going live (3-4 days effort)
+- V1.5 scope documented in DEVLOG
+
+**Concepts learned:**
+- Promise.all() — parallel API calls, single loading flag
+- Object.entries() — convert object to iterable array
+- Operator precedence — && before ||, parentheses needed for OR conditions
+- Default vs named exports — import Sidebar vs import { Sidebar }
+- Backend computation vs frontend data consumption
+
+### Phase 8 ✅ Complete!
+**Next: Phase 9 — Deployment (Railway + Vercel + MongoDB Atlas)**
