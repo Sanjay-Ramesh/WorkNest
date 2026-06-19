@@ -7,6 +7,7 @@
   import ManagerDashboard from "./pages/ManagerDashboard";
   import Profile from "./pages/Profile";
   import HRDashboard from "./pages/HRDashboard";
+  import Register from "./pages/Register";
 
   function App() {
     return (
@@ -37,6 +38,8 @@
             <ProtectedRoute allowedRoles={["HR_ADMIN", "SUPER_ADMIN"]}>
               <HRDashboard />
             </ProtectedRoute>} />
+          <Route path="/register" element = {
+            <Register />} />
         </Routes>
       </BrowserRouter>
     )

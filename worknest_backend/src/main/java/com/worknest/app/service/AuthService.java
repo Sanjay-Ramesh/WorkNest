@@ -3,6 +3,7 @@ package com.worknest.app.service;
 import com.worknest.app.dto.request.LoginRequest;
 import com.worknest.app.dto.request.RegisterRequest;
 import com.worknest.app.dto.response.AuthResponse;
+import com.worknest.app.model.Role;
 import com.worknest.app.model.User;
 import com.worknest.app.repository.UserRepository;
 import com.worknest.app.util.JwtUtil;
@@ -32,7 +33,7 @@ public class AuthService {
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .employeeId(registerRequest.getEmployeeId())
-                .role(registerRequest.getRole())
+                .role(Role.EMPLOYEE)
                 .department(registerRequest.getDepartment())
                 .joinedDate(registerRequest.getJoinedDate())
                 .isActive(true) // accounts are active on creation; admins can deactivate later

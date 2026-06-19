@@ -1,6 +1,5 @@
 package com.worknest.app.dto.request;
 
-import com.worknest.app.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,8 +22,6 @@ public class RegisterRequest {
     private String email;
     @NotBlank
     private String password;
-    @NotNull
-    private Role role;
     @NotBlank
     private String department;
     @NotNull

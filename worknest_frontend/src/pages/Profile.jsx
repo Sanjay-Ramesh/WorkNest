@@ -10,15 +10,21 @@ function Profile(){
 
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchProfile = async () => {
-            const response = await axios.get("http://localhost:8080/api/users/profile", {
-                params: {employeeId : employeeId},
-                headers:{ Authorization : `Bearer ${token}`}
-            })
-            setProfile(response.data);
-            setLoading(false);
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/users/profile`, {
+                    params: { employeeId : employeeId },
+                    headers:{ Authorization : `Bearer ${token}`}
+                });
+                setProfile(response.data);
+            } catch (error) {
+                setError(error.response?.data || "Failed to load profile");
+            } finally {
+                setLoading(false);
+            }
         }
         fetchProfile()
     }, []);
@@ -29,6 +35,7 @@ function Profile(){
             <div className="bg-gray-50 flex-1 p-8">
                 <h1>Profile</h1>
                 {loading && <p>Loading...</p>}
+                {error && <p className="text-red-600">{error}</p>}
                 {profile && (
                     <div className="flex gap-4 mt-6">
                         <div className="bg-white p-6 rounded-lg shadow w-96 mt-6">

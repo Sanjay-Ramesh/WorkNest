@@ -1,6 +1,7 @@
 package com.worknest.app.dto.request;
 
 import com.worknest.app.model.LeaveType;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ public class LeaveRequestDto {
     @NotNull
     private LeaveType leaveType;
     @NotNull
+    @FutureOrPresent
     private LocalDate startDate;
     @NotNull
     private LocalDate endDate;

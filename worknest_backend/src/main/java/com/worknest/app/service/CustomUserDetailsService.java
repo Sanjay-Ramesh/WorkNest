@@ -8,7 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +24,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(username).orElseThrow(() ->
                 new UsernameNotFoundException("Email doesn't exists"));
 
-        // Empty authorities here — role-based access is enforced via @PreAuthorize using JWT claims
+        // Role loaded as a SimpleGrantedAuthority so @PreAuthorize("hasAuthority(...)") works.
+        // We use the raw role name (e.g. "MANAGER") — hasAuthority() not hasRole() which needs "ROLE_" prefix.
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),
                 user.getPassword(),
-                Collections.emptyList()
+                List.of(new SimpleGrantedAuthority(user.getRole().name()))
         );
     }
     

@@ -11,17 +11,21 @@ function MyLeaves() {
 
     const [leaves, setLeaves] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchLeaves = async () => {
-            const response = await axios.get("http://localhost:8080/api/leaves", {
-                params : {employeeId : employeeId,
-                    role : role
-                },
-                headers:{ Authorization: `Bearer ${token}`}
-            })
-            setLeaves(response.data);
-            setLoading(false);
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/leaves`, {
+                    params : { employeeId : employeeId, role : role },
+                    headers:{ Authorization: `Bearer ${token}`}
+                })
+                setLeaves(response.data);
+            } catch (error) {
+                setError(error.response?.data || "Failed to load leaves");
+            } finally {
+                setLoading(false);
+            }
         }
         fetchLeaves()
     }, []);
@@ -32,6 +36,7 @@ function MyLeaves() {
             <div className="bg-gray-50 flex-1 p-8">
                 <h1 className="text-2xl font-bold mb-6">My Leaves</h1>
                 {loading && <p>Loading...</p>}
+                {error && <p className="text-red-600">{error}</p>}
                 <table className="w-full border-collapse">
                     <thead>
                         <tr className="bg-gray-200">

@@ -15,7 +15,7 @@ function Login() {
 
     const handleLogin = async () => {
         try{
-            const response = await axios.post("http://localhost:8080/api/auth/login", {
+            const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
             email : email,
             password : password
         })
@@ -23,8 +23,10 @@ function Login() {
         const token = response.data.token;
         localStorage.setItem("token", token);
         const decoded = jwtDecode(token);
-        if(decoded.role === "EMPLOYEE")
+        if (decoded.role === "EMPLOYEE")
             navigate("/dashboard");
+        else if (decoded.role === "HR_ADMIN")
+            navigate("/hrdashboard");
         else
             navigate("/managerdashboard");
         }
@@ -64,7 +66,14 @@ function Login() {
                 onChange = {(e) => setPassword(e.target.value)}
                 className={inputClass}/>
                 <button onClick={handleLogin} className="bg-blue-600 text-white p-2 rounded w-full">Login</button>
+                <p className="text-center text-sm">Don't have an account? <span onClick={() => navigate("/register")} className="text-blue-600 cursor-pointer">Register</span></p>
                 {error && <p className="text-red-500">{error}</p>}
+            </div>
+            <div className="bg-blue-50 p-3 rounded text-sm text-gray-600">
+                <p className="font-semibold mb-1">Demo Accounts: </p>
+                <p>👤 Employee: emp@worknest.com / demo123</p>
+                <p>👔 Manager: manager@worknest.com / demo123</p>
+                <p>🏢 HR Admin: hr@worknest.com / demo123 </p>
             </div>
         </div>
     )

@@ -32,6 +32,9 @@ public class LeaveService {
         if(user.getRole() != Role.EMPLOYEE)
             throw new RuntimeException("Only Employees can apply");
 
+        if (leaveRequestDto.getEndDate().isBefore(leaveRequestDto.getStartDate()))
+            throw new RuntimeException("End date cannot be before start date");
+
         int currentYear = LocalDate.now().getYear();
 
         LeaveBalance leaveBalance = leaveBalanceRepository.findByEmployeeIdAndYear(leaveRequestDto.getEmployeeId(), currentYear).orElseThrow(() ->
@@ -69,10 +72,10 @@ public class LeaveService {
     }
 
     // Approves or rejects a PENDING leave request, deducts balance on approval, and emails the employee.
-    // Called by managers or HR_ADMIN via the leave review endpoint.
+    // callerEmail comes from the verified JWT — not from the HTTP request — so it can't be spoofed.
     public String updateLeaveStatus(String leaveId,
                                     LeaveStatus leaveStatus,
-                                    String managerId) {
+                                    String callerEmail) {
         LeaveRequest leaveRequest = leaveRequestRepository.findById(leaveId).orElseThrow(() ->
                 new RuntimeException("Leave Request not found"));
 
@@ -81,8 +84,11 @@ public class LeaveService {
             throw new RuntimeException("Leave already processed");
         }
 
+        User manager = userRepository.findByEmail(callerEmail).orElseThrow(() ->
+                new RuntimeException("Manager not found"));
+
         leaveRequest.setStatus(leaveStatus);
-        leaveRequest.setReviewedBy(managerId);
+        leaveRequest.setReviewedBy(manager.getEmployeeId());
         leaveRequest.setReviewedAt(LocalDateTime.now());
 
         // Deduct from balance only on APPROVED — REJECTED leaves do not consume quota
@@ -97,9 +103,11 @@ public class LeaveService {
                 case EARNED -> leaveBalance.getEarned();
             };
 
-            // TODO: should deduct totalDays, not 1 — currently a multi-day leave only consumes 1 from balance
-            quota.setUsed(quota.getUsed() + 1);
-            quota.setRemaining(quota.getRemaining() - 1);
+            if (quota.getRemaining() < leaveRequest.getTotalDays())
+                throw new RuntimeException("Insufficient leave balance to approve this request");
+
+            quota.setUsed(quota.getUsed() + leaveRequest.getTotalDays());
+            quota.setRemaining(quota.getRemaining() - leaveRequest.getTotalDays());
 
             leaveBalanceRepository.save(leaveBalance);
         }
@@ -117,9 +125,12 @@ public class LeaveService {
         return "Leave Status updated successfully";
     }
 
-    // HR_ADMIN sees all requests across the org; employees see only their own
-    public List<LeaveRequest> getAllLeaves(String employeeId, Role role){
-        if(role == Role.HR_ADMIN || role == Role.MANAGER)
+    // HR_ADMIN and MANAGER see all requests across the org; employees see only their own.
+    // callerEmail comes from the verified JWT — not from the HTTP request — so it can't be spoofed.
+    public List<LeaveRequest> getAllLeaves(String employeeId, String callerEmail){
+        User caller = userRepository.findByEmail(callerEmail).orElseThrow(() ->
+                new RuntimeException("Caller not found"));
+        if(caller.getRole() == Role.HR_ADMIN || caller.getRole() == Role.MANAGER)
             return leaveRequestRepository.findAll();
         else
             return leaveRequestRepository.findByEmployeeId(employeeId);

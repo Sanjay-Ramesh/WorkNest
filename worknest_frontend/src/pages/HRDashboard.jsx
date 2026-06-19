@@ -13,25 +13,30 @@ function HRDashboard() {
     const [summaryData, setSummaryData] = useState(null);
 
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchAllDatas = async () => {
-            const [todayRes, pendingRes, deptRes, summaryRes] = await Promise.all([
-                axios.get("http://localhost:8080/api/dashboard/todayleave", {
-                headers: { Authorization : `Bearer ${token}`} }),
-                axios.get("http://localhost:8080/api/dashboard/pendingleaves", {
-                headers: { Authorization : `Bearer ${token}`} }),
-                axios.get("http://localhost:8080/api/dashboard/department", {
-                headers: { Authorization : `Bearer ${token}`} }),
-                axios.get("http://localhost:8080/api/dashboard/summary", {
-                headers: { Authorization : `Bearer ${token}`} })                                                
-            ])
-
-            setTodayLeaves(todayRes.data);
-            setPendingLeaves(pendingRes.data);
-            setDepartmentData(deptRes.data);
-            setSummaryData(summaryRes.data);
-            setLoading(false);
+            try {
+                const [todayRes, pendingRes, deptRes, summaryRes] = await Promise.all([
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/dashboard/todayleave`, {
+                    headers: { Authorization : `Bearer ${token}`} }),
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/dashboard/pendingleaves`, {
+                    headers: { Authorization : `Bearer ${token}`} }),
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/dashboard/department`, {
+                    headers: { Authorization : `Bearer ${token}`} }),
+                    axios.get(`${import.meta.env.VITE_API_URL}/api/dashboard/summary`, {
+                    headers: { Authorization : `Bearer ${token}`} })
+                ]);
+                setTodayLeaves(todayRes.data);
+                setPendingLeaves(pendingRes.data);
+                setDepartmentData(deptRes.data);
+                setSummaryData(summaryRes.data);
+            } catch (error) {
+                setError(error.response?.data || "Failed to load dashboard data");
+            } finally {
+                setLoading(false);
+            }
         }
 
         fetchAllDatas();
@@ -43,6 +48,7 @@ function HRDashboard() {
             <div className="bg-gray-50 flex-1 p-8">
                 <h1 className="text-2xl font-bold mb-6"> HR Dashboard</h1>
                 {loading && <p>Loading...</p>}
+                {error && <p className="text-red-600">{error}</p>}
                 <div>
                     <h2>Today Leaves</h2>
                     <table className="w-full border-collapse">

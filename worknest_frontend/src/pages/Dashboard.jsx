@@ -10,15 +10,21 @@ function Dashboard() {
 
     const [balance, setBalance] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchBalance = async () => {
-             const response = await axios.get("http://localhost:8080/api/leaves/balance", {
-            params:{ employeeId : employeeId},
-            headers:{ Authorization: `Bearer ${token}` }
-        })
-        setBalance(response.data);
-        setLoading(false);
+            try {
+                const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/leaves/balance`, {
+                    params:{ employeeId : employeeId},
+                    headers:{ Authorization: `Bearer ${token}` }
+                })
+                setBalance(response.data);
+            } catch (error) {
+                setError(error.response?.data || "Failed to load leave balance");
+            } finally {
+                setLoading(false);
+            }
         }
         fetchBalance()
     }, []);
@@ -30,6 +36,7 @@ function Dashboard() {
             <div className="bg-gray-50 flex-1 p-8">
                 <h1>Welcome, {decoded.name}</h1>
                 {loading && <p>Loading...</p>}
+                {error && <p className="text-red-600">{error}</p>}
                 {balance && (
                     <div className="flex gap-4 mt-6">
                         <div className="bg-white p-6 rounded-lg shadow w-48">

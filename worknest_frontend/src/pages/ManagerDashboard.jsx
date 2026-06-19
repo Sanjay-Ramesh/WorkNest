@@ -11,30 +11,35 @@ function ManagerDashboard() {
 
     const [leaves, setLeaves] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     const approveClass = "bg-green-500 text-white px-3 py-1 rounded mr-2";
     const rejectClass = "bg-red-500 text-white px-3 py-1 rounded";
 
     const fetchLeaves = async () => {
-        const response = await axios.get("http://localhost:8080/api/leaves", {
-            params : {
-                employeeId : managerId,
-                role : role
-            },
-            headers : { Authorization : `Bearer ${token}`}
-        })
-        setLeaves(response.data)
-        setLoading(false);
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/leaves`, {
+                params : { employeeId : managerId, role : role },
+                headers : { Authorization : `Bearer ${token}`}
+            })
+            setLeaves(response.data);
+        } catch (error) {
+            setError(error.response?.data || "Failed to load leaves");
+        } finally {
+            setLoading(false);
+        }
     }
 
     const handleApprove = async (leaveId, leaveStatus) => {
-        const response = await axios.put(`http://localhost:8080/api/leaves/${leaveId}/status`, null, {
-            params : {managerId : managerId,
-                leaveStatus : leaveStatus
-            },
-            headers: {Authorization: `Bearer ${token}`} }
-        )
-        fetchLeaves();
+        try {
+            await axios.put(`${import.meta.env.VITE_API_URL}/api/leaves/${leaveId}/status`, null, {
+                params : { managerId : managerId, leaveStatus : leaveStatus },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            fetchLeaves();
+        } catch (error) {
+            setError(error.response?.data || "Failed to update leave status");
+        }
     }
 
     useEffect(() => {
@@ -47,6 +52,7 @@ function ManagerDashboard() {
             <div className="bg-gray-50 flex-1 p-8">
                 <h1 className="text-2xl font-bold mb-6">Manager Dashboard</h1>
                 {loading && <p>Loading...</p>}
+                {error && <p className="text-red-600">{error}</p>}
                 <table className="w-full border-collapse">
                     <thead>
                         <tr className="bg-gray-200">
