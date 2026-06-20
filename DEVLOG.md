@@ -311,5 +311,90 @@
 - Default vs named exports — import Sidebar vs import { Sidebar }
 - Backend computation vs frontend data consumption
 
-### Phase 8 ✅ Complete!
-**Next: Phase 9 — Deployment (Railway + Vercel + MongoDB Atlas)**
+## June 19, 2026
+
+### Security Audit + Fixes + Register Page + E2E Testing
+
+**Security Audit (Claude Code):**
+- Full codebase audit performed — 17 issues found across backend and frontend
+- Confirmed application.properties never committed to GitHub (credentials safe locally)
+- All critical/high issues fixed before deployment
+
+**Security Fixes Applied:**
+
+Fix #1 — Role extracted from JWT principal (@AuthenticationPrincipal) instead of @RequestParam
+- LeaveController.getAllLeaves() no longer trusts client-supplied role
+- LeaveService.getAllLeaves() now accepts caller email, fetches real role from DB
+
+Fix #2 — @PreAuthorize added to updateLeaveStatus()
+- CustomUserDetailsService now loads role as authority (SimpleGrantedAuthority)
+- LeaveController.updateLeaveStatus() guarded with hasAuthority('MANAGER','HR_ADMIN','SUPER_ADMIN')
+- managerId removed from query param — fetched from JWT principal instead
+- Key learning: hasAuthority('MANAGER') vs hasRole('MANAGER') — hasRole looks for ROLE_MANAGER prefix
+
+Fix #3 — Role removed from RegisterRequest
+- All registrations now hardcode Role.EMPLOYEE
+- Existing MGR001/HR001 users unaffected (already in MongoDB)
+- DataSeeder + admin endpoint deferred to V2 (Employee Management feature)
+
+Fix #4 — @Valid + date validation added to applyLeave()
+- @Valid annotation added to LeaveController.applyLeave()
+- endDate >= startDate validation added in LeaveService
+- Prevents NPE crash and negative-day leaves being saved
+
+Fix #5 — Leave balance deduction fixed (hardcoded 1 → totalDays)
+- LeaveService.updateLeaveStatus() now uses leaveRequest.getTotalDays()
+- 5-day leave now correctly deducts 5 days from balance
+
+Fix #6 — try/catch/finally added to all frontend async functions
+- Dashboard, MyLeaves, ManagerDashboard, Profile, HRDashboard, ApplyLeave
+- setLoading(false) in finally block — loading never stuck forever on error
+
+Fix #7 — GlobalExceptionHandler.java created
+- @RestControllerAdvice catches RuntimeException
+- Returns clean JSON error responses, no stack traces exposed
+
+Fix #8 — HR_ADMIN login redirect fixed
+- Login.jsx now redirects HR_ADMIN/SUPER_ADMIN to /hrdashboard
+- EMPLOYEE → /dashboard, MANAGER → /managerdashboard, HR_ADMIN/SUPER_ADMIN → /hrdashboard
+
+Fix #9 — Hardcoded localhost URLs replaced with VITE_API_URL
+- All axios.get/post/put calls now use import.meta.env.VITE_API_URL
+- .env created for local dev (VITE_API_URL=http://localhost:8080)
+- .env.production created for Railway URL (to be filled after deployment)
+- .env.example tracked on GitHub with placeholder values
+- .env and .env.production added to .gitignore
+
+**Bugs found and fixed during Playwright testing:**
+- ManagerDashboard.jsx — double quote instead of backtick on axios URL (URL never interpolated)
+- HRDashboard.jsx — same double quote bug on all 4 axios calls
+
+**Register Page built:**
+- Register.jsx — name, email, password, employeeId, department, joinedDate fields
+- No role field (backend hardcodes EMPLOYEE after Fix #3)
+- Error handling with try/catch
+- Redirects to login on success
+- "Already have an account? Login" link
+- Route added in App.jsx (no ProtectedRoute — public page)
+- "Don't have an account? Register" link added to Login.jsx
+
+**Playwright E2E Tests — 5/5 PASSING:**
+- Test 1: Register flow (timestamp-based email for idempotency)
+- Test 2: Employee full journey (login, dashboard, apply leave, my leaves, profile, security redirect)
+- Test 3: Manager flow (login, approve leave, row disappears)
+- Test 4: HR Admin flow (login, all 4 dashboard sections verified)
+- Test 5: Security checks (EMPLOYEE blocked from /managerdashboard and /hrdashboard)
+- Credentials moved to .env, referenced via process.env in tests
+
+**Concepts learned:**
+- @AuthenticationPrincipal — Spring Security injects verified JWT user automatically
+- @PreAuthorize — method-level security guard
+- SimpleGrantedAuthority — how Spring Security attaches roles to authenticated users
+- hasAuthority() vs hasRole() — prefix difference (ROLE_X vs X)
+- Bootstrap problem — how first admin account is created in real systems
+- Integration vs E2E testing — unit tests verify logic, E2E tests verify full user journey
+- Playwright — browser automation for E2E testing
+- .env.example pattern — safe credential placeholder for collaborators
+
+### Phase 8 ✅ Fully Complete (including security hardening)
+### Next: Phase 9 — Deployment (Railway + Vercel + MongoDB Atlas IP restriction)
