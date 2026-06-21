@@ -2,13 +2,13 @@
 import { test, expect } from '@playwright/test';
 
 const BASE = process.env.TEST_BASE_URL || 'http://localhost:5173';
-const EMPLOYEE_EMAIL = process.env.TEST_EMPLOYEE_EMAIL || 'sanjayramesh1425@gmail.com';
-const EMPLOYEE_PASSWORD = process.env.TEST_EMPLOYEE_PASSWORD || 'password123';
-const MANAGER_EMAIL = process.env.TEST_MANAGER_EMAIL || 'manager@worknest.com';
-const MANAGER_PASSWORD = process.env.TEST_MANAGER_PASSWORD || 'password123';
-const HR_EMAIL = process.env.TEST_HR_EMAIL || 'sanjay@worknest.com';
-const HR_PASSWORD = process.env.TEST_HR_PASSWORD || 'password123';
-const NEW_USER_PASSWORD = process.env.TEST_NEW_USER_PASSWORD || 'password123';
+const EMPLOYEE_EMAIL = process.env.TEST_EMPLOYEE_EMAIL || '';
+const EMPLOYEE_PASSWORD = process.env.TEST_EMPLOYEE_PASSWORD || '';
+const MANAGER_EMAIL = process.env.TEST_MANAGER_EMAIL || '';
+const MANAGER_PASSWORD = process.env.TEST_MANAGER_PASSWORD || '';
+const HR_EMAIL = process.env.TEST_HR_EMAIL || '';
+const HR_PASSWORD = process.env.TEST_HR_PASSWORD || '';
+const NEW_USER_PASSWORD = process.env.TEST_NEW_USER_PASSWORD || '';
 const TOMORROW = '2026-06-20';
 const DAY_AFTER = '2026-06-21';
 const RUN_ID = Date.now(); // unique per run so Register test is always idempotent

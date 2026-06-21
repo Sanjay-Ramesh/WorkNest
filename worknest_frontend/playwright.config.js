@@ -1,5 +1,8 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test';
+import { config } from 'dotenv';
+
+config(); // load .env before tests read process.env
 
 export default defineConfig({
   testDir: './tests',
