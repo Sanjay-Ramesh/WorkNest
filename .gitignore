@@ -1,0 +1,12 @@
+# Root-level secrets and one-off scripts — never commit
+promote-managers.js
+seed-*.js
+migrate-*.js
+
+# Log files
+*.log
+worknest_backend/backend.log
+
+# OS
+.DS_Store
+Thumbs.db

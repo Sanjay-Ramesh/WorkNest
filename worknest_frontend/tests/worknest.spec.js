@@ -1,7 +1,7 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
 
-const BASE = process.env.TEST_BASE_URL || 'http://localhost:5173';
+const BASE          = process.env.TEST_BASE_URL       || 'http://localhost:5173';
 const EMPLOYEE_EMAIL    = process.env.TEST_EMPLOYEE_EMAIL    || '';
 const EMPLOYEE_PASSWORD = process.env.TEST_EMPLOYEE_PASSWORD || '';
 const MANAGER_EMAIL     = process.env.TEST_MANAGER_EMAIL     || '';
@@ -9,28 +9,30 @@ const MANAGER_PASSWORD  = process.env.TEST_MANAGER_PASSWORD  || '';
 const HR_EMAIL          = process.env.TEST_HR_EMAIL          || '';
 const HR_PASSWORD       = process.env.TEST_HR_PASSWORD       || '';
 const NEW_USER_PASSWORD = process.env.TEST_NEW_USER_PASSWORD || '';
+// Shared password for the seeded dept-manager and dept-employee accounts
+const DEPT_PASSWORD     = process.env.TEST_DEPT_PASSWORD     || '';
 
 // Department employees (EMP201–EMP204) — registered with auto LeaveBalance
 const DEPT_EMPLOYEES = [
-  { empId: 'EMP201', name: 'Alice Engineering', email: 'alice2.eng@worknest.com',      dept: 'Engineering' },
-  { empId: 'EMP202', name: 'Bob Finance',        email: 'bob2.finance@worknest.com',    dept: 'Finance'     },
-  { empId: 'EMP203', name: 'Carol Marketing',    email: 'carol2.marketing@worknest.com',dept: 'Marketing'   },
-  { empId: 'EMP204', name: 'David Operations',   email: 'david2.ops@worknest.com',      dept: 'Operations'  },
+  { empId: 'EMP201', name: 'Alice Engineering', email: 'alice2.eng@worknest.com',       dept: 'Engineering' },
+  { empId: 'EMP202', name: 'Bob Finance',        email: 'bob2.finance@worknest.com',     dept: 'Finance'     },
+  { empId: 'EMP203', name: 'Carol Marketing',    email: 'carol2.marketing@worknest.com', dept: 'Marketing'   },
+  { empId: 'EMP204', name: 'David Operations',   email: 'david2.ops@worknest.com',       dept: 'Operations'  },
 ];
 
 // Department managers — promoted to MANAGER role in MongoDB by user
 const DEPT_MANAGERS = [
-  { email: 'eng.manager@worknest.com',     password: 'demo123', dept: 'Engineering' },
-  { email: 'finance.manager@worknest.com', password: 'demo123', dept: 'Finance'     },
-  { email: 'marketing.manager@worknest.com',password: 'demo123',dept: 'Marketing'   },
-  { email: 'ops.manager@worknest.com',     password: 'demo123', dept: 'Operations'  },
+  { email: 'eng.manager@worknest.com',      password: DEPT_PASSWORD, dept: 'Engineering' },
+  { email: 'finance.manager@worknest.com',  password: DEPT_PASSWORD, dept: 'Finance'     },
+  { email: 'marketing.manager@worknest.com',password: DEPT_PASSWORD, dept: 'Marketing'   },
+  { email: 'ops.manager@worknest.com',      password: DEPT_PASSWORD, dept: 'Operations'  },
 ];
 
 const TOMORROW = '2026-06-23';
 const DAY_AFTER = '2026-06-24';
 const RUN_ID    = Date.now();
 
-const API = 'http://localhost:8080';
+const API = process.env.TEST_API_URL || 'http://localhost:8080';
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 async function loginAs(page, email, password) {
@@ -48,7 +50,7 @@ async function logout(page) {
 // Apply a leave via the backend API directly (used to seed test data before UI assertions)
 async function applyLeaveViaApi(request, empEmail, empId, leaveType, startDate, endDate, reason) {
   const loginRes = await request.post(`${API}/api/auth/login`, {
-    data: { email: empEmail, password: 'demo123' },
+    data: { email: empEmail, password: DEPT_PASSWORD },
   });
   const { token } = await loginRes.json();
   await request.post(`${API}/api/leaves/apply`, {
@@ -100,7 +102,7 @@ test.describe('1. Register Flow', () => {
       await page.getByPlaceholder('EmployeeId').fill('EMP_DUP');
       await page.getByPlaceholder('Name').fill('Duplicate User');
       await page.getByPlaceholder('Email').fill('emp@worknest.com');
-      await page.getByPlaceholder('Password').fill('demo123');
+      await page.getByPlaceholder('Password').fill(NEW_USER_PASSWORD);
       await page.getByPlaceholder('Department').fill('Engineering');
       await page.locator('input[type="date"]').fill('2026-01-01');
       await page.getByRole('button', { name: 'Register' }).click();
