@@ -19,6 +19,7 @@ public class LeaveRequest {
     @Id
     private String id;
     private String employeeId;
+    private String department;
     private LeaveType leaveType;
     private LocalDate startDate;
     private LocalDate endDate;

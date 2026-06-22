@@ -58,6 +58,7 @@ public class LeaveService {
 
         LeaveRequest leaveRequest = LeaveRequest.builder()
                 .employeeId(leaveRequestDto.getEmployeeId())
+                .department(leaveRequestDto.getDapartment())
                 .leaveType(leaveRequestDto.getLeaveType())
                 .startDate(leaveRequestDto.getStartDate())
                 .endDate(leaveRequestDto.getEndDate())
@@ -130,8 +131,10 @@ public class LeaveService {
     public List<LeaveRequest> getAllLeaves(String employeeId, String callerEmail){
         User caller = userRepository.findByEmail(callerEmail).orElseThrow(() ->
                 new RuntimeException("Caller not found"));
-        if(caller.getRole() == Role.HR_ADMIN || caller.getRole() == Role.MANAGER)
+        if(caller.getRole() == Role.HR_ADMIN)
             return leaveRequestRepository.findAll();
+        else if(caller.getRole() == Role.MANAGER)
+            return leaveRequestRepository.findByDepartment(caller.getDepartment()); // only manager's department
         else
             return leaveRequestRepository.findByEmployeeId(employeeId);
     }

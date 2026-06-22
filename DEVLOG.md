@@ -397,4 +397,48 @@ Fix #9 — Hardcoded localhost URLs replaced with VITE_API_URL
 - .env.example pattern — safe credential placeholder for collaborators
 
 ### Phase 8 ✅ Fully Complete (including security hardening)
+
+## June 20, 2026
+
+### Security Hardening + Cross-Department Fix
+
+**Security rescan (Claude Code + GitHub):**
+- Confirmed application.properties never in git history ✅
+- Found CRITICAL issue: real personal email and 
+  passwords hardcoded as fallbacks in worknest.spec.js — now in git history
+- Found zip file in git history (commit be264df3) — only contained 
+  spring.application.name=worknest, no real credentials
+
+**Fixes applied:**
+- worknest.spec.js — removed all hardcoded credential fallbacks, replaced with || ''
+- .env.example — added placeholder values for all 8 test credential variables
+- playwright.config.js — added dotenv import so .env auto-loads before tests run
+- package.json — added dotenv as devDependency
+
+**Demo accounts cleanup:**
+- Deleted all personal accounts (sanjay@worknest.com, 
+  old manager account) from MongoDB Atlas
+- Kept clean demo accounts only:
+  - emp@worknest.com (EMP001, Engineering, EMPLOYEE)
+  - manager@worknest.com (MGR001, Engineering, MANAGER)
+  - hr@worknest.com (HR001, HR, HR_ADMIN)
+- Updated .env with demo credentials (demo123)
+
+**Cross-department visibility fix:**
+- Added department field to LeaveRequest.java model
+- LeaveRequestRepository — added findByDepartment(String department) method
+- LeaveService.applyLeave() — now saves employee's department when creating LeaveRequest
+- LeaveService.getAllLeaves() — MANAGER now sees only own department leaves 
+  (findByDepartment), HR_ADMIN still sees all (findAll())
+- Previously MANAGER could see ALL employees' leaves across all departments — security gap closed
+
+**Pending:**
+- Playwright E2E rerun with new demo credentials — in progress
+- Cross-department test with EMP002 (Sales) + MGR002 (Sales) — pending
+
+## June 21, 2026
+
+- Holiday
+
+
 ### Next: Phase 9 — Deployment (Railway + Vercel + MongoDB Atlas IP restriction)

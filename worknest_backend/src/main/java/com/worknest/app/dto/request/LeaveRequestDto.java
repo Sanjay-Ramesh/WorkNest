@@ -17,6 +17,8 @@ import java.time.LocalDate;
 public class LeaveRequestDto {
     @NotBlank
     private String employeeId;
+    @NotBlank
+    private String dapartment;
     @NotNull
     private LeaveType leaveType;
     @NotNull

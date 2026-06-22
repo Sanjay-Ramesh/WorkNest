@@ -13,6 +13,8 @@ public interface LeaveRequestRepository extends MongoRepository<LeaveRequest, St
     // Used when an employee views their own leave history.
     List<LeaveRequest> findByEmployeeId(String employeeId);
 
+    List<LeaveRequest> findByDepartment(String department);
+
     // Finds all leave requests matching a given status (PENDING, APPROVED, REJECTED).
     // Used by HR/Admin to fetch pending requests for review or audit.
     List<LeaveRequest> findByStatus(LeaveStatus leaveStatus);
