@@ -440,5 +440,73 @@ Fix #9 — Hardcoded localhost URLs replaced with VITE_API_URL
 
 - Holiday
 
+## June 20, 2026
+
+### Security Hardening + Cross-Department Fix + Git History Cleanup
+
+**Security rescan findings:**
+- CRITICAL: promote-managers.js committed with live MongoDB URI + password 
+- CRITICAL: test-results/error-context.md committed with Gmail app password 
+  - Root cause: test-results/ not gitignored — Playwright error logs captured backend network 
+    responses containing credentials during a failed test run
+- MEDIUM: backend.log was tracked in git
+- MEDIUM: test-results/ folder was tracked in git
+
+**Fixes applied:**
+- test-results/ added to .gitignore
+- backend.log added to .gitignore
+- Git history cleaned using git filter-repo — purged 3 sensitive files from all 48 commits
+  - promote-managers.js
+  - worknest_backend/backend.log
+  - worknest_frontend/test-results/**
+- Force pushed to GitHub — verified clean
+- Backup created: WorkNest_backup_20260622.zip on Desktop
+- All commit hashes rewritten (expected behavior with filter-repo)
+
+**Credentials rotated:**
+- MongoDB Atlas password rotated — updated in application.properties locally
+- Gmail App Password revoked and regenerated — updated in application.properties locally
+- Note: application.properties is gitignored — credentials never leave local machine
+
+**Playwright test file hardening:**
+- worknest.spec.js — all hardcoded fallback credentials replaced with || ''
+- .env.example — placeholder values added for all 8 test credential variables
+- playwright.config.js — dotenv added so .env auto-loads before tests run
+- package.json — dotenv added as devDependency
+
+**Demo accounts cleanup:**
+- Deleted all personal accounts from MongoDB Atlas
+- Clean demo accounts created:
+  - emp@worknest.com / demo123 (EMP001, Engineering, EMPLOYEE)
+  - manager@worknest.com / demo123 (MGR001, Engineering, MANAGER)
+  - hr@worknest.com / demo123 (HR001, HR, HR_ADMIN)
+- .env updated with new demo credentials
+
+**Cross-department visibility fix:**
+- Added department field to LeaveRequest.java
+- LeaveRequestRepository — added findByDepartment(String department)
+- LeaveService.applyLeave() — saves employee's department on leave creation
+- LeaveService.getAllLeaves() — MANAGER sees only own department (findByDepartment),
+  HR_ADMIN still sees all (findAll())
+- Previously MANAGER saw ALL departments — security gap closed
+
+**Playwright E2E — 13/13 PASSING ✅**
+- Register Flow: 2/2
+- Employee Flow: 1/1
+- Manager Flow: 1/1
+- HR Admin Flow: 1/1
+- Security Checks: 3/3
+- Department Leave Isolation: 5/5
+- Verified passing after git history cleanup and credential rotation (40.5s total)
+
+**Concepts learned:**
+- git filter-repo — purge specific files from entire git history without losing commits
+- Force push — required after history rewrite (commit hashes change)
+- Playwright error logs — auto-generated files can capture sensitive network data
+- gitignore importance — test-results/, logs, .env must always be excluded
+- MongoDB connection lifecycle — backend stays connected after startup, 
+  password change only affects new connections (must update application.properties + restart)
+
+### Phase 8 + Security ✅ Fully Complete
 
 ### Next: Phase 9 — Deployment (Railway + Vercel + MongoDB Atlas IP restriction)
