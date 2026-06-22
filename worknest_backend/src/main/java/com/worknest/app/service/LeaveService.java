@@ -58,7 +58,7 @@ public class LeaveService {
 
         LeaveRequest leaveRequest = LeaveRequest.builder()
                 .employeeId(leaveRequestDto.getEmployeeId())
-                .department(leaveRequestDto.getDapartment())
+                .department(user.getDepartment()) // always derived from user record — client value ignored
                 .leaveType(leaveRequestDto.getLeaveType())
                 .startDate(leaveRequestDto.getStartDate())
                 .endDate(leaveRequestDto.getEndDate())

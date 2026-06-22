@@ -3,23 +3,25 @@ package com.worknest.app.service;
 import com.worknest.app.dto.request.LoginRequest;
 import com.worknest.app.dto.request.RegisterRequest;
 import com.worknest.app.dto.response.AuthResponse;
+import com.worknest.app.model.LeaveBalance;
 import com.worknest.app.model.Role;
 import com.worknest.app.model.User;
+import com.worknest.app.repository.LeaveBalanceRepository;
 import com.worknest.app.repository.UserRepository;
 import com.worknest.app.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final UserRepository userRepository ;
-
+    private final UserRepository userRepository;
+    private final LeaveBalanceRepository leaveBalanceRepository;
     private final PasswordEncoder passwordEncoder;
-
     private final JwtUtil jwtUtil;
 
     public String register(RegisterRequest registerRequest){
@@ -41,6 +43,17 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+
+        // Auto-create leave balance for the current year so the employee can apply leaves immediately
+        int currentYear = LocalDate.now().getYear();
+        LeaveBalance leaveBalance = LeaveBalance.builder()
+                .employeeId(registerRequest.getEmployeeId())
+                .year(currentYear)
+                .casual(new LeaveBalance.LeaveQuota(12, 0, 12))
+                .sick(new LeaveBalance.LeaveQuota(8, 0, 8))
+                .earned(new LeaveBalance.LeaveQuota(15, 0, 15))
+                .build();
+        leaveBalanceRepository.save(leaveBalance);
 
         return "User Registered Successfully";
     }

@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class LeaveRequestDto {
     @NotBlank
     private String employeeId;
-    @NotBlank
+    // Optional from client — LeaveService derives it from the user record to prevent tampering
     private String dapartment;
     @NotNull
     private LeaveType leaveType;

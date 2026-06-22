@@ -13,7 +13,7 @@ export default defineConfig({
   reporter: [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL: process.env.TEST_BASE_URL || 'http://localhost:5173',
-    headless: true,
+    headless: false,
     screenshot: 'only-on-failure',
     video: 'off',
     trace: 'off',
