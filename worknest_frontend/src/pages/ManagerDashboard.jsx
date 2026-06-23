@@ -18,8 +18,7 @@ function ManagerDashboard() {
 
     const fetchLeaves = async () => {
         try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/leaves`, {
-                params : { employeeId : managerId, role : role },
+            const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/leaves/approvals`, {
                 headers : { Authorization : `Bearer ${token}`}
             })
             setLeaves(response.data);

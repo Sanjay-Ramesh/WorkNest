@@ -40,6 +40,13 @@ public class LeaveController {
         return ResponseEntity.ok(leaveService.getAllLeaves(employeeId));
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'HR_ADMIN', 'SUPER_ADMIN')")
+    @GetMapping("/approvals")
+    public ResponseEntity<List<LeaveRequest>> getPendingLeavesForApproval(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(leaveService.getPendingLeavesForApproval(userDetails.getUsername()));
+    }
+
     @GetMapping("/balance")
     public ResponseEntity<?> getLeaveBalance(@RequestParam String employeeId){
         return new ResponseEntity<>(leaveService.getLeaveBalance(employeeId), HttpStatus.OK);

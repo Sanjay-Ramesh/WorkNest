@@ -142,6 +142,16 @@ public class LeaveService {
         return leaveRequestRepository.findByEmployeeId(employeeId);
     }
 
+    // Returns PENDING leaves scoped to the caller's authority:
+    // HR_ADMIN/SUPER_ADMIN → all org pending; MANAGER → own department only.
+    public List<LeaveRequest> getPendingLeavesForApproval(String callerEmail) {
+        User caller = userRepository.findByEmail(callerEmail).orElseThrow(() ->
+                new RuntimeException("Caller not found"));
+        if (caller.getRole() == Role.HR_ADMIN || caller.getRole() == Role.SUPER_ADMIN)
+            return leaveRequestRepository.findByStatus(LeaveStatus.PENDING);
+        return leaveRequestRepository.findByDepartmentAndStatus(caller.getDepartment(), LeaveStatus.PENDING);
+    }
+
     public LeaveBalance getLeaveBalance(String employeeId){
         int currentYear = LocalDate.now().getYear();
         LeaveBalance leaveBalance = leaveBalanceRepository.findByEmployeeIdAndYear(employeeId, currentYear).orElseThrow(() ->
