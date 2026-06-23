@@ -507,6 +507,25 @@ Fix #9 — Hardcoded localhost URLs replaced with VITE_API_URL
 - MongoDB connection lifecycle — backend stays connected after startup, 
   password change only affects new connections (must update application.properties + restart)
 
-### Phase 8 + Security ✅ Fully Complete
+## June 23, 2026
 
-### Next: Phase 9 — Deployment (Railway + Vercel + MongoDB Atlas IP restriction)
+### Pre-Deployment Fixes + Security Infrastructure Complete
+
+**Security infrastructure (permanent):**
+- ggshield pre-commit hook installed — blocks credentials at commit time
+- Pre-push hook — scans commits before reaching GitHub
+- .gitignore extended — all Playwright artifacts, logs, scripts covered
+- SECURITY.md — documents never-commit files, credential rotation process
+- .env validation in Playwright — tests halt if credentials missing
+- Playwright configured: trace:off, video:off — no network data captured in error logs
+
+**V1 bug fixes:**
+- Leave balance reset for all demo accounts (EMP001/MGR001/HR001) → Casual:12, Sick:8, Earned:15
+- MyLeaves fix — all roles now see only own leaves (was showing department/all leaves for MANAGER/HR_ADMIN)
+- Apply Leave fix — MANAGER and HR_ADMIN were throwing "Only Employees can apply" error — fixed
+- HR_ADMIN leave auto-approved (no higher role in V1)
+- SECURITY.md personal info replaced with YOUR_* placeholders
+
+**Playwright E2E — 13/13 PASSING ✅**
+
+### Next: Phase 9 — Deployment (Railway + Vercel)
