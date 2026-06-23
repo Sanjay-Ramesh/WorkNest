@@ -26,11 +26,7 @@ public class LeaveService {
 
     public String applyLeave(LeaveRequestDto leaveRequestDto){
         User user = userRepository.findByEmployeeId(leaveRequestDto.getEmployeeId()).orElseThrow(() ->
-                new RuntimeException("Employee Id doesn't exists"));
-
-        // Managers and HR_ADMIN are not allowed to submit leave requests
-        if(user.getRole() != Role.EMPLOYEE)
-            throw new RuntimeException("Only Employees can apply");
+                new RuntimeException("Employee Id doesn't exist"));
 
         if (leaveRequestDto.getEndDate().isBefore(leaveRequestDto.getStartDate()))
             throw new RuntimeException("End date cannot be before start date");
@@ -56,6 +52,11 @@ public class LeaveService {
                 leaveRequestDto.getEndDate()
         ) + 1;
 
+        // HR_ADMIN has no higher authority to approve their leave → auto-approve on submission.
+        // MANAGER and EMPLOYEE leaves stay PENDING until a MANAGER/HR_ADMIN approves them.
+        boolean autoApprove = (user.getRole() == Role.HR_ADMIN);
+        LocalDateTime now = LocalDateTime.now();
+
         LeaveRequest leaveRequest = LeaveRequest.builder()
                 .employeeId(leaveRequestDto.getEmployeeId())
                 .department(user.getDepartment()) // always derived from user record — client value ignored
@@ -64,9 +65,18 @@ public class LeaveService {
                 .endDate(leaveRequestDto.getEndDate())
                 .reason(leaveRequestDto.getReason())
                 .totalDays(totalDays)
-                .status(LeaveStatus.PENDING)
-                .createdAt(LocalDateTime.now())
+                .status(autoApprove ? LeaveStatus.APPROVED : LeaveStatus.PENDING)
+                .reviewedBy(autoApprove ? user.getEmployeeId() : null)
+                .reviewedAt(autoApprove ? now : null)
+                .createdAt(now)
                 .build();
+
+        // Deduct balance immediately for auto-approved HR_ADMIN leaves
+        if (autoApprove) {
+            quota.setUsed(quota.getUsed() + totalDays);
+            quota.setRemaining(quota.getRemaining() - totalDays);
+            leaveBalanceRepository.save(leaveBalance);
+        }
 
         leaveRequestRepository.save(leaveRequest);
         return "Leave Applied Successfully";
@@ -126,17 +136,10 @@ public class LeaveService {
         return "Leave Status updated successfully";
     }
 
-    // HR_ADMIN and MANAGER see all requests across the org; employees see only their own.
-    // callerEmail comes from the verified JWT — not from the HTTP request — so it can't be spoofed.
-    public List<LeaveRequest> getAllLeaves(String employeeId, String callerEmail){
-        User caller = userRepository.findByEmail(callerEmail).orElseThrow(() ->
-                new RuntimeException("Caller not found"));
-        if(caller.getRole() == Role.HR_ADMIN)
-            return leaveRequestRepository.findAll();
-        else if(caller.getRole() == Role.MANAGER)
-            return leaveRequestRepository.findByDepartment(caller.getDepartment()); // only manager's department
-        else
-            return leaveRequestRepository.findByEmployeeId(employeeId);
+    // My Leaves always shows the logged-in user's own leave history, regardless of role.
+    // Manager/HR Dashboard endpoints handle department-wide and org-wide views separately.
+    public List<LeaveRequest> getAllLeaves(String employeeId){
+        return leaveRequestRepository.findByEmployeeId(employeeId);
     }
 
     public LeaveBalance getLeaveBalance(String employeeId){
