@@ -127,7 +127,7 @@ function HRDashboard() {
                         {summaryData && Object.entries(summaryData).map(([leaveType, avgBalance]) => {
                             return (<tr key={leaveType}>
                                 <td className="p-3">{leaveType}</td>
-                                <td className="p-3">{avgBalance}</td>
+                                <td className="p-3">{avgBalance.toFixed(0)}</td>
                             </tr>
                         )})}
                     </tbody>
