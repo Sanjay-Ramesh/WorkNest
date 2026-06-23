@@ -1,11 +1,26 @@
 # Root-level secrets and one-off scripts — never commit
 promote-managers.js
 seed-*.js
+*seed*.js
 migrate-*.js
+*cleanup*.js
+*temp*.js
 
 # Log files
 *.log
 worknest_backend/backend.log
+
+# Playwright artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+*.spec.js.snap
+screenshots/
+videos/
+traces/
+error-context.md
+**/error-context*
+**/*error-context*
 
 # OS
 .DS_Store
