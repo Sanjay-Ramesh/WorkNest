@@ -142,14 +142,20 @@ public class LeaveService {
         return leaveRequestRepository.findByEmployeeId(employeeId);
     }
 
-    // Returns PENDING leaves scoped to the caller's authority:
+    // Returns PENDING leaves scoped to the caller's authority, excluding their own leaves.
     // HR_ADMIN/SUPER_ADMIN → all org pending; MANAGER → own department only.
+    // Callers cannot approve their own leave requests.
     public List<LeaveRequest> getPendingLeavesForApproval(String callerEmail) {
         User caller = userRepository.findByEmail(callerEmail).orElseThrow(() ->
                 new RuntimeException("Caller not found"));
+        List<LeaveRequest> pending;
         if (caller.getRole() == Role.HR_ADMIN || caller.getRole() == Role.SUPER_ADMIN)
-            return leaveRequestRepository.findByStatus(LeaveStatus.PENDING);
-        return leaveRequestRepository.findByDepartmentAndStatus(caller.getDepartment(), LeaveStatus.PENDING);
+            pending = leaveRequestRepository.findByStatus(LeaveStatus.PENDING);
+        else
+            pending = leaveRequestRepository.findByDepartmentAndStatus(caller.getDepartment(), LeaveStatus.PENDING);
+        return pending.stream()
+                .filter(leave -> !leave.getEmployeeId().equals(caller.getEmployeeId()))
+                .collect(java.util.stream.Collectors.toList());
     }
 
     public LeaveBalance getLeaveBalance(String employeeId){
