@@ -7,11 +7,11 @@ function ManagerDashboard() {
     const token = localStorage.getItem("token");
     const decoded = jwtDecode(token);
     const managerId = decoded.employeeId;
-    const role = decoded.role;
 
     const [leaves, setLeaves] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [processingId, setProcessingId] = useState(null);
 
     const approveClass = "bg-green-500 text-white px-3 py-1 rounded mr-2";
     const rejectClass = "bg-red-500 text-white px-3 py-1 rounded";
@@ -30,14 +30,17 @@ function ManagerDashboard() {
     }
 
     const handleApprove = async (leaveId, leaveStatus) => {
+        setProcessingId(leaveId);
         try {
             await axios.put(`${import.meta.env.VITE_API_URL}/api/leaves/${leaveId}/status`, null, {
                 params : { managerId : managerId, leaveStatus : leaveStatus },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            fetchLeaves();
+            setLeaves(prev => prev.filter(leave => leave.id !== leaveId));
         } catch (error) {
             setError(error.response?.data || "Failed to update leave status");
+        } finally {
+            setProcessingId(null);
         }
     }
 
@@ -74,8 +77,16 @@ function ManagerDashboard() {
                                 <td className="p-3">{leave.endDate}</td>
                                 <td className="p-3">{leave.reason}</td>
                                 <td className="p-3">
-                                    <button onClick={() => handleApprove(leave.id, "APPROVED")} className={approveClass}>Approve</button>
-                                    <button onClick={() => handleApprove(leave.id, "REJECTED")} className={rejectClass}>Reject</button>
+                                    <button 
+                                    onClick={() => handleApprove(leave.id, "APPROVED")} 
+                                    disabled={processingId === leave.id}
+                                    className={`${approveClass} disabled:opacity-50`}>Approve</button>
+                                    {processingId === leave.id ? "Processing..." : "Approve"}
+                                    <button 
+                                    onClick={() => handleApprove(leave.id, "REJECTED")}
+                                    disabled={processingId === leave.id} 
+                                    className={`${rejectClass} disabled:opacity-50`}>Reject</button>
+                                    {processingId === leave.id ? "Processing..." : "Reject"}
                                 </td>
                             </tr>
                         ))
