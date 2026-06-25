@@ -528,4 +528,47 @@ Fix #9 — Hardcoded localhost URLs replaced with VITE_API_URL
 
 **Playwright E2E — 13/13 PASSING ✅**
 
-### Next: Phase 9 — Deployment (Railway + Vercel)
+## June 24, 2026
+
+### Phase 9 — Deployment Complete 🚀
+
+**Backend — Railway:**
+- Spring Boot deployed successfully
+- Issues fixed during deployment:
+  - JWT_EXPIRATION typo (j86400000 → 86400000)
+  - Mail variables renamed to SPRING_MAIL_* format
+  - MongoDB URI renamed to SPRING_DATA_MONGODB_URI
+  - MongoDB Atlas password mismatch → rotated and updated
+- Final Railway variables: SPRING_DATA_MONGODB_URI, JWT_SECRET, JWT_EXPIRATION,
+  SPRING_MAIL_USERNAME, SPRING_MAIL_PASSWORD, SPRING_MAIL_HOST, SPRING_MAIL_PORT,
+  SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH, SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE,
+  FRONTEND_URL
+- Live at: https://worknest-production-dcf8.up.railway.app
+
+**Frontend — Vercel:**
+- React + Vite deployed successfully
+- Root Directory set to worknest_frontend
+- VITE_API_URL set to Railway backend URL
+- Live at: https://work-nest-iota-nine.vercel.app
+
+**Post-deployment fixes:**
+- 404 on page refresh — fixed with vercel.json SPA rewrite rule (3 lines)
+- Manager Dashboard UI not updating after approve/reject — root cause: Railway blocks
+  SMTP ports 587/465, Gmail timeout caused backend to return 400, catch block prevented
+  UI update. Fixed with @Async on sendLeaveStatusEmail — email runs in separate thread,
+  approve returns 200 immediately, UI updates correctly
+- Leave balance stale data — old test data from dev phases, not a code bug. Cleared
+  all pre-June-24 leave records from Atlas, reset EMP001/HR001 balances manually
+
+**CORS:**
+- SecurityConfig updated to read FRONTEND_URL from environment variable
+- Railway variable FRONTEND_URL set to Vercel URL
+
+**Pending:**
+- Login page click-to-fill demo credentials
+- LinkedIn post
+
+### Phase 9 ✅ Complete — WorkNest V1 is LIVE!
+### Live URLs:
+- Backend: https://worknest-production-dcf8.up.railway.app
+- Frontend: https://work-nest-iota-nine.vercel.app
