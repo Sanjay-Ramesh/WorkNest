@@ -572,3 +572,7 @@ Fix #9 — Hardcoded localhost URLs replaced with VITE_API_URL
 ### Live URLs:
 - Backend: https://worknest-production-dcf8.up.railway.app
 - Frontend: https://work-nest-iota-nine.vercel.app
+
+## June 25, 2026
+
+- Planning to do V1.5
