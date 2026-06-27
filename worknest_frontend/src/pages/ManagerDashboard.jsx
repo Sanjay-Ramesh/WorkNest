@@ -80,8 +80,8 @@ function ManagerDashboard() {
                                     <button 
                                     onClick={() => handleApprove(leave.id, "APPROVED")} 
                                     disabled={processingId === leave.id}
-                                    className={`${approveClass} disabled:opacity-50`}>Approve</button>
-                                    {processingId === leave.id ? "Processing..." : "Approve"}
+                                    className={`${approveClass} disabled:opacity-50`}>{processingId === leave.id ? "Processing..." : "Approve"}</button>
+                                    
                                     <button 
                                     onClick={() => handleApprove(leave.id, "REJECTED")}
                                     disabled={processingId === leave.id} 
