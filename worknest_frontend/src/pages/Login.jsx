@@ -68,12 +68,12 @@ function Login() {
                 <button onClick={handleLogin} className="bg-blue-600 text-white p-2 rounded w-full">Login</button>
                 <p className="text-center text-sm">Don't have an account? <span onClick={() => navigate("/register")} className="text-blue-600 cursor-pointer">Register</span></p>
                 {error && <p className="text-red-500">{error}</p>}
-            </div>
-            <div className="bg-blue-50 p-3 rounded text-sm text-gray-600">
-                <p className="font-semibold mb-1">Demo Accounts: </p>
-                <p>👤 Employee: emp@worknest.com / demo123</p>
-                <p>👔 Manager: manager@worknest.com / demo123</p>
-                <p>🏢 HR Admin: hr@worknest.com / demo123 </p>
+                <div className="bg-blue-50 p-3 rounded text-sm text-gray-600 flex flex-col gap-1 mt-1">
+                    <p className="font-semibold mb-1">Demo Accounts: (click to fill) — Password: demo123</p>
+                    <button onClick = {() => {setEmail("emp@worknest.com"); setPassword("demo123");}} className="hover:bg-blue-100 text-left">👤 Employee - emp@worknest.com</button>
+                    <button onClick = {() => {setEmail("manager@worknest.com"); setPassword("demo123");}} className="hover:bg-blue-100 text-left">👔 Manager - manager@worknest.com</button>
+                    <button onClick = {() => {setEmail("hr@worknest.com"); setPassword("demo123");}} className="hover:bg-blue-100 text-left">🏢 HR Admin - hr@worknest.com</button>
+                </div>
             </div>
         </div>
     )
