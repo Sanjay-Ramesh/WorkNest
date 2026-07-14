@@ -16,6 +16,10 @@ function ApplyLeave() {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    const today = new Date().toISOString().split("T")[0];
+    const currentYear = new Date().getFullYear();
+    const maxDate = `${currentYear}-12-31`;
+
     const applyLeaveClass = "border border-gray-300 rounded p-2 w-96";
 
     const handleSubmit = async () => {
@@ -53,8 +57,8 @@ function ApplyLeave() {
                             <option value="SICK">Sick</option>
                             <option value="EARNED">Earned</option>
                         </select>
-                        <input className={applyLeaveClass} type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
-                        <input className={applyLeaveClass} type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                        <input className={applyLeaveClass} type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} min={today} max={maxDate}/>
+                        <input className={applyLeaveClass} type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} min={today} max={maxDate}/>
                         <input className={applyLeaveClass} type="text" placeholder="reason" value={reason} onChange={(e) => setReason(e.target.value)} />
                         <button className="bg-blue-600 text-white p-2 rounded w-96" disabled={loading} onClick={handleSubmit}>{loading? "Submitting..." : "Submit"}</button>
                         {message && <p className="text-green-600">{message}</p>}

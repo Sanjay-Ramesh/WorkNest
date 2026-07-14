@@ -76,6 +76,7 @@
 - [x] HR Admin dashboard (analytics, department breakdown, balance summary)
 - [x] Email notifications (async, triggered on approve/reject)
 - [x] Profile page (role-aware, excludes password)
+- [x] Leave validation (balance check, cross-year prevention, date picker bounds)
 - [ ] Super Admin panel (V2)
 - [ ] AI insights — Gemini API (V2)
 - [ ] Export PDF/CSV reports (V2)

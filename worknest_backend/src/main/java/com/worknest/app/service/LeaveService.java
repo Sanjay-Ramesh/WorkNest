@@ -33,6 +33,9 @@ public class LeaveService {
 
         int currentYear = LocalDate.now().getYear();
 
+        if (leaveRequestDto.getStartDate().getYear() != currentYear || leaveRequestDto.getEndDate().getYear() != currentYear)
+            throw new RuntimeException("Apply Leave only for the current year");
+        
         LeaveBalance leaveBalance = leaveBalanceRepository.findByEmployeeIdAndYear(leaveRequestDto.getEmployeeId(), currentYear).orElseThrow(() ->
                 new RuntimeException("Leave Balance not found"));
 
@@ -43,14 +46,16 @@ public class LeaveService {
             case EARNED -> leaveBalance.getEarned();
         };
 
-        if(quota.getRemaining() <= 0)
-            throw new RuntimeException("Insufficient Leave Balance");
+        
 
         // +1 because ChronoUnit.DAYS.between is end-exclusive (e.g. Mon–Mon = 0 days without +1)
         int totalDays = (int) ChronoUnit.DAYS.between(
                 leaveRequestDto.getStartDate(),
                 leaveRequestDto.getEndDate()
         ) + 1;
+
+        if (quota.getRemaining() < totalDays)
+                throw new RuntimeException("Insufficient leave balance to apply this type of leave");
 
         // HR_ADMIN has no higher authority to approve their leave → auto-approve on submission.
         // MANAGER and EMPLOYEE leaves stay PENDING until a MANAGER/HR_ADMIN approves them.

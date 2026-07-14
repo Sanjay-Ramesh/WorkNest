@@ -576,3 +576,36 @@ Fix #9 — Hardcoded localhost URLs replaced with VITE_API_URL
 ## June 25, 2026
 
 - Planning to do V1.5
+
+## July 14, 2026
+
+### Bug Fixes — Leave Validation & Calendar Bounds
+
+**Bugs identified and fixed:**
+
+**Bug 1 — HR Admin balance check too weak (`LeaveService.java`):**
+- Old check: `quota.getRemaining() <= 0` — only blocked requests when balance was already zero or negative
+- This meant an HR Admin with 1 day remaining could apply for 15 days and it would approve silently
+- Root cause of -355547 Earned Leave balance: a leave request with a massive date range 
+  (wrong year in end date) slipped through the weak check and deducted ~355,562 days at once
+- Fixed: `quota.getRemaining() < totalDays` — now checks if enough days exist for the specific request
+- The Manager approval path (`updateLeaveStatus`) already had the correct check — HR path now matches it
+
+**Bug 2 — Cross-year leave requests not blocked (`LeaveService.java`):**
+- Leave balances are scoped per year — a cross-year request (e.g. Dec 28 → Jan 3) would 
+  deduct from one year's balance but leave the other year's deduction missing
+- Decision: disallow cross-year leaves entirely (matches standard HRMS practice — employees submit two requests)
+- Added validation: if `startDate.getYear() != currentYear || endDate.getYear() != currentYear` → throw exception
+
+**Bug 3 — Date picker had no bounds (`ApplyLeave.jsx`):**
+- Calendar allowed selecting past dates (June 2026 visible in July) and year 3000
+- Fixed: `min={today}` and `max={maxDate}` (Dec 31, current year) added to both date inputs
+- `today` derived from `new Date().toISOString().split("T")[0]`
+- `maxDate` derived from template literal `` `${new Date().getFullYear()}-12-31` ``
+
+**Concepts learned:**
+- `<= 0` vs `< totalDays` — wrong comparison operator can allow silent balance drain
+- Defense in depth — frontend bounds prevent bad UX, backend validation prevents API abuse
+- `new Date().toISOString().split("T")[0]` — extract date-only string in JS
+- Template literals — `` `${year}-12-31` `` for constructing date strings dynamically
+- `LocalDate.getYear()` — Java method to extract year from a date for comparison
