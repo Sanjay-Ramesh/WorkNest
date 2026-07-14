@@ -64,7 +64,7 @@
 | **Employee** | Apply leave, view own balance, track approval status |
 | **Manager** | Approve/reject team leaves, view own department only, apply own leave |
 | **HR Admin** | Company-wide dashboard, approve manager leaves, analytics |
-| **Super Admin** | System configuration (V2) |
+| **Super Admin (V2)** | System configuration (V2) |
 
 ---
 
