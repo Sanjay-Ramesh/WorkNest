@@ -3,7 +3,7 @@
 > SaaS-style Workforce Management Platform — Live Deployed
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-10b981)](https://work-nest-iota-nine.vercel.app)
-[![Backend](https://img.shields.io/badge/Backend-Railway-0f172a)](https://worknest-production-dcf8.up.railway.app)
+[![Backend](https://img.shields.io/badge/Backend-Render-0f172a)](https://worknest-jqvq.onrender.com)
 [![Database](https://img.shields.io/badge/Database-MongoDB%20Atlas-47A248)](https://mongodb.com)
 [![Tests](https://img.shields.io/badge/E2E%20Tests-13%2F13%20Passing-10b981)](https://playwright.dev)
 
@@ -14,7 +14,7 @@
 | Layer | URL |
 |---|---|
 | **Frontend** | https://work-nest-iota-nine.vercel.app |
-| **Backend** | https://worknest-production-dcf8.up.railway.app |
+| **Backend** | https://worknest-jqvq.onrender.com |
 | **Database** | MongoDB Atlas — AWS Mumbai (ap-south-1) |
 
 ### Demo Accounts
@@ -45,7 +45,7 @@
 - Role-based routing (Employee / Manager / HR Admin)
 
 ### Deployment
-- Backend → Railway (primary) · also containerized with Docker and deployable to Render
+- Backend → Render (Dockerized deploy — multi-stage Dockerfile, Java 17)
 - Frontend → Vercel
 - Database → MongoDB Atlas (M0 Free Tier)
 
@@ -116,7 +116,7 @@ npm run dev
 
 ## 🐳 Docker Deployment (Backend)
 
-The backend includes a multi-stage `Dockerfile` (build stage compiles the jar, runtime stage runs it on a lighter JRE image) for deploying anywhere that supports containers — used to deploy to Render as a secondary environment.
+The backend includes a multi-stage `Dockerfile` (build stage compiles the jar, runtime stage runs it on a lighter JRE image) — this is how the live backend is deployed to Render, and it also runs locally or on any other container platform.
 
 ```bash
 cd worknest_backend
@@ -166,7 +166,7 @@ WorkNest/
 
 ## 🔒 Environment Variables
 
-### Backend (Railway / Render / Docker)
+### Backend (Render / Docker)
 ```
 SPRING_DATA_MONGODB_URI=
 JWT_SECRET=
