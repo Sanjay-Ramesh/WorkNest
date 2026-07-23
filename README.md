@@ -45,7 +45,7 @@
 - Role-based routing (Employee / Manager / HR Admin)
 
 ### Deployment
-- Backend → Railway
+- Backend → Railway (primary) · also containerized with Docker and deployable to Render
 - Frontend → Vercel
 - Database → MongoDB Atlas (M0 Free Tier)
 
@@ -100,6 +100,8 @@ cp application-example.properties src/main/resources/application.properties
 ./mvnw spring-boot:run
 ```
 
+> **Note:** `mvnw` needs to be executable. If you hit a `Permission denied` error, run `chmod +x mvnw` (Linux/Mac/Git Bash) before starting.
+
 ### Frontend
 
 ```bash
@@ -109,6 +111,20 @@ npm install
 echo "VITE_API_URL=http://localhost:8080" > .env
 npm run dev
 ```
+
+---
+
+## 🐳 Docker Deployment (Backend)
+
+The backend includes a multi-stage `Dockerfile` (build stage compiles the jar, runtime stage runs it on a lighter JRE image) for deploying anywhere that supports containers — used to deploy to Render as a secondary environment.
+
+```bash
+cd worknest_backend
+docker build -t worknest-backend .
+docker run -p 8080:8080 --env-file .env worknest-backend
+```
+
+Required environment variables at container runtime — see [Environment Variables](#-environment-variables) below.
 
 ---
 
@@ -135,6 +151,7 @@ WorkNest/
 │   │   ├── dto/               # Request + Response DTOs
 │   │   ├── config/            # Security + Mail config
 │   │   └── util/              # JWT utility
+│   ├── Dockerfile             # Multi-stage build for containerized deploy
 │   └── application-example.properties
 ├── worknest_frontend/         # React application
 │   ├── src/
@@ -149,7 +166,7 @@ WorkNest/
 
 ## 🔒 Environment Variables
 
-### Backend (Railway)
+### Backend (Railway / Render / Docker)
 ```
 SPRING_DATA_MONGODB_URI=
 JWT_SECRET=
@@ -160,6 +177,8 @@ SPRING_MAIL_HOST=smtp.gmail.com
 SPRING_MAIL_PORT=587
 FRONTEND_URL=
 ```
+
+> `FRONTEND_URL` must exactly match the deployed frontend origin (e.g. `https://work-nest-iota-nine.vercel.app`) — Spring Security's CORS config only allows requests from this exact URL. Vercel preview/deployment-specific URLs will be blocked unless added separately.
 
 ### Frontend (Vercel)
 ```
